@@ -11,8 +11,6 @@ You must also have a working Docker installation, and be comfortable building im
 
 Please note that I created this for my own personal use and am not looking for feedback, issues, feature requests etc. It's provided here as a starting point for your own projects.
 
-Nissan's servers
-
 ## Instructions
 
 1. Create a folder e.g. `leaf2mqtt`
