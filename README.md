@@ -1,7 +1,7 @@
 # leaf2mqtt
 Builds a Docker container to pull in data from the Nissan Connect platform for the LEAF and publish over MQTT, using Tobias Westergaard Kjeldsen's excellent `dartnissanconnect` library which is also the basis for the MyLeaf app.
 
-This works for my UK-based 2020 LEAF 40kWh car, and *should* work for any European LEAF that uses the NissanConnect app. Please ensure you have installed the app and can communicate with the car before proceeding with this.
+This works for my UK-based 2020 LEAF 40kWh car, and *should* work for any European LEAF that uses the NissanConnect app ([Android](https://play.google.com/store/apps/details?id=eu.nissan.nissanconnect.services&hl=en_GB&gl=US) or [iOS](https://apps.apple.com/gb/app/nissanconnect-services/id1451280347)). Please ensure you have installed the app and can communicate with the car before proceeding with this.
 
 This **will not** work for older "original-shape" LEAFs. Don't waste any time trying.
 
