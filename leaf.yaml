@@ -1,0 +1,83 @@
+- platform: mqtt
+  name: "LEAF monthly trips"
+  state_topic: "leaf/MY_VIN/tripsNumber"
+
+- platform: mqtt
+  name: "LEAF monthly travel time"
+  state_topic: "leaf/MY_VIN/traveltime"
+  value_template: >-
+    {% set vl = value.split(":") %}
+    {{ timedelta(0,(vl[0])|int*3600 + (vl[1])|int*60) }}
+
+- platform: mqtt
+  name: "LEAF charge time 6kW"
+  state_topic: "leaf/MY_VIN/time6kW"
+  value_template: >-
+    {% set vl = value.split(":") %}
+    {{ (timedelta(0,(vl[0])|int*3600 + (vl[1])|int*60)|string)[:-3] }}
+
+- platform: template
+  sensors:
+    leaf_charge_time_6kw_secs:
+      friendly_name: "Charge time to 100% in seconds"
+      unit_of_measurement: "s"
+      value_template: >-
+        {% set vl = states('sensor.leaf_charge_time_6kw').split(":") %}
+        {{ timedelta(0,(vl[0])|int*3600 + (vl[1])|int*60).total_seconds()|int }}
+
+- platform: mqtt
+  name: "LEAF battery percentage"
+  state_topic: "leaf/MY_VIN/battpct"
+  value_template: "{{ value.replace('%', '') }}"
+  device_class: battery
+  unit_of_measurement: "%"
+
+- platform: mqtt
+  name: LEAF GOM
+  state_topic: "leaf/MY_VIN/GOM"
+  value_template: "{{ value.replace(' mi', '') }}"
+  unit_of_measurement: "mi"
+
+- platform: mqtt
+  name: LEAF cabin temperature
+  state_topic: "leaf/MY_VIN/cabintemp"
+  device_class: temperature
+  unit_of_measurement: "°C"
+
+- platform: mqtt
+  name: LEAF miles this month
+  state_topic: "leaf/MY_VIN/distance"
+  value_template: "{{ value.replace(' mi', '') }}"
+  unit_of_measurement: "mi"
+
+- platform: mqtt
+  name: LEAF average speed this month
+  state_topic: "leaf/MY_VIN/avspeed"
+  value_template: "{{ value.replace(' mph', '') }}"
+  unit_of_measurement: "mph"
+
+- platform: mqtt
+  name: LEAF consumption this month
+  state_topic: "leaf/MY_VIN/kWhconsumed"
+  value_template: "{{ value.replace(' kWh', '') }}"
+  unit_of_measurement: "kWh"
+  device_class: energy
+
+- platform: mqtt
+  name: LEAF regen this month
+  state_topic: "leaf/MY_VIN/kWhregen"
+  value_template: "{{ value.replace(' kWh', '') }}"
+  unit_of_measurement: "kWh"
+  device_class: energy
+
+- platform: mqtt
+  name: LEAF efficiency this month
+  state_topic: "leaf/MY_VIN/milesperkWh"
+  value_template: "{{ value.replace(' mi/kWh', '') }}"
+  unit_of_measurement: "mi/kWh"
+
+- platform: mqtt
+  name: LEAF last updated
+  state_topic: "leaf/MY_VIN/updated"
+  device_class: timestamp
+
