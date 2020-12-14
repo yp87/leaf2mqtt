@@ -1,0 +1,6 @@
+name: leaf2mqtt
+version: 0.0.1
+dependencies:
+  args: ^1.6.0
+  dartnissanconnect:
+    git: https://gitlab.com/tobiaswkjeldsen/dartnissanconnect
