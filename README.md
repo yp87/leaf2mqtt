@@ -5,7 +5,7 @@ This works for my UK-based 2020 LEAF 40kWh car, and *should* work for any Europe
 
 This **will not** work for older "original-shape" LEAFs. Don't waste any time trying.
 
-You must have a working MQTT server on your LAN that is not password-protected. The container uses `mosquitto` for publishing its data. I use this for interfacing with Home Assistant (running on a Synology NAS, hence the Docker container approach) via MQTT sensors: see `leaf.yaml` for examples.
+You must have a working MQTT server on your LAN that is not password-protected. The container uses `mosquitto` for publishing its data. I use this for interfacing with Home Assistant (running on a Synology NAS, hence the Docker container approach) via MQTT sensors: see `leaf.yaml` for examples (and replace the MY_VIN with your VIN from the MQTT messages once you have the steps below working!).
 
 You must also have a working Docker installation, and be comfortable building images and running them as containers.
 
