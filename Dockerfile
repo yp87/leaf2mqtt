@@ -1,6 +1,6 @@
 FROM ubuntu:20.10
 RUN apt-get update
-RUN apt-get upgrade
+RUN apt-get upgrade -y
 RUN apt-get install -y apt-utils
 RUN apt-get install -y apt-transport-https mosquitto wget gnupg2 git mosquitto-clients
 # also python3 python3-pip
