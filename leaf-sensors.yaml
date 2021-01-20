@@ -42,7 +42,7 @@
   name: LEAF cabin temperature
   state_topic: "leaf/MY_VIN/cabintemp"
   device_class: temperature
-  unit_of_measurement: "°C"
+  unit_of_measurement: "Â°C"
 
 - platform: mqtt
   name: LEAF miles this month
