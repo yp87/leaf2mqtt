@@ -1,0 +1,19 @@
+- platform: mqtt
+  name: leaf_connected
+  state_topic: "leaf/MY_VIN/connected"
+  payload_on: 'true'
+  payload_off: 'false'
+  device_class: plug
+
+- platform: mqtt
+  name: leaf_charging
+  state_topic: "leaf/MY_VIN/charging"
+  payload_on: 'true'
+  payload_off: 'false'
+  device_class: battery_charging
+
+- platform: mqtt
+  name: leaf_hvac_running
+  state_topic: "leaf/MY_VIN/hvacrunning"
+  payload_on: 'true'
+  payload_off: 'false'
