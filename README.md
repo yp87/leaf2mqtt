@@ -19,10 +19,10 @@ Please note that I created this for my own personal use and am not looking for f
 1. Run `./image-build.sh`, which will prompt you for your `sudo` password
 1. That should have created a `leaf2mqtt` image: now you need to fire up a container from it. Doesn't need filesystem access, just four environment variables:
     1. `MQTTTOPIC`: I set this to `leaf` and you should too unless you have a good reason not to
-    1. `MQTTHOST`: LAN IP address of your MQTT server.
-    1. `USERNAME`: your NissanConnect username — the one you use to log into the app
-    1. `PASSWORD`: your NissanConnect password — the one you use to log into the app
-    1. `MQTTUSER`: (optional) Username for your MQTT broker
-    1. `MQTTPASS`: (optional) Password for your MQTT broker
+    1. `MQTTHOST`: LAN IP address of your MQTT broker.
+    1. `USERNAME`: your NissanConnect username — the one you use to log into the app.
+    1. `PASSWORD`: your NissanConnect password — the one you use to log into the app.
+    1. `MQTTUSER`: (optional) Username for your MQTT broker.
+    1. `MQTTPASS`: (optional) Password for your MQTT broker.
 
 If all goes well, you should start to see the messages coming through on MQTT. By default, the refresh frequency is once every 30 minutes, increasing to every 10 minutes if connected and not charging, and every 5 minutes if charging. These can be changed at the end of `leaf2mqtt.sh` prior to building the Docker image if needed, but don't set the times too low or you may get blocked from Nissan's servers.
