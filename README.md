@@ -17,7 +17,7 @@ Please note that I created this for my own personal use and am not looking for f
 1. Drop all these files into that folder.
 1. `cd` into that folder
 1. Run `./image-build.sh`, which will prompt you for your `sudo` password
-1. That should have created a `leaf2mqtt` image: now you need to fire up a container from it. Doesn't need filesystem access, just four environment variables:
+1. That should have created a `leaf2mqtt` image: now you need to fire up a container from it. Doesn't need filesystem access, but you need to set four or six environment variables:
     1. `MQTTTOPIC`: I set this to `leaf` and you should too unless you have a good reason not to
     1. `MQTTHOST`: LAN IP address of your MQTT broker.
     1. `USERNAME`: your NissanConnect username — the one you use to log into the app.
