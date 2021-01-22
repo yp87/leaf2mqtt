@@ -1,5 +1,5 @@
 # LEAF climate
-# Note that it takes around 10 seconds to get a response from
+# Note that it takes around 20 seconds to get a response from
 # Nissan's servers, and the response isn't guaranteed correct.
 - platform: mqtt
   name: "LEAF climate control"
