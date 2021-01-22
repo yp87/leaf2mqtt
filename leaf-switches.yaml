@@ -1,6 +1,8 @@
 # LEAF climate
 # Note that it takes around 20 seconds to get a response from
 # Nissan's servers, and the response isn't guaranteed correct.
+# This switch uses the returned status, so won't update from
+# off to on until it gets a message from Nissan.
 - platform: mqtt
   name: "LEAF climate control"
   command_topic: "leaf/MY_VIN/set/climate"
