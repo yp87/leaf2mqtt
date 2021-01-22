@@ -45,6 +45,9 @@ void main(List<String> arguments) {
     vehicle.requestClimateControlStatusRefresh();
     var vin = vehicle.vin;
 
+    print('#!/bin/bash');
+    print('echo "${vin}" > vin.txt');
+
     vehicle.requestMonthlyStatistics(month: DateTime.now()).then((stats) {
       sttdict['tripsNumber'] = stats.tripsNumber;
       sttdict['milesperkWh'] = stats.milesPerKWh;
@@ -61,8 +64,6 @@ void main(List<String> arguments) {
         print('mosquitto_pub ${mosopt} -t "${topic}/${vin}/errortime" -m "${ts}"');
         print('mosquitto_pub ${mosopt} -t "${topic}/${vin}/error" -m "${en}"');
     });
-
-    sleep(const Duration(seconds: 30));
 
     vehicle.requestBatteryStatus().then((battery) {
       batdict['battpct'] = battery.batteryPercentage;
