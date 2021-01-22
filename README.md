@@ -16,7 +16,7 @@ Please note that I created this for my own personal use and am not looking for f
 1. Create a folder e.g. `leaf2mqtt`
 1. Drop all these files into that folder (Code button, Download ZIP).
 1. `cd` into that folder
-1. Run `./image-build.sh`, which will prompt you for your `sudo` password, and then take quite a while to complete.
+1. Run `./image-build.sh`, which will prompt you for your `sudo` password, and then take quite a while to complete. You'll see a lot of `Removing` messages: this is just slimming down the image by removing intermediate packages that aren't required at runtime.
 1. That should have created a `leaf2mqtt` image: now you need to fire up a container from it. Doesn't need filesystem access, but you need to set four or six environment variables:
     1. `MQTTTOPIC`: I set this to `leaf` and you should too unless you have a good reason not to
     1. `MQTTHOST`: LAN IP address of your MQTT broker.
