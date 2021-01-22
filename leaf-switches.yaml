@@ -15,6 +15,6 @@
 # LEAF update: refreshes the data, takes about 15s to work
 - platform: mqtt
   name: "LEAF refresh"
-  command_topic: "leaf/SJNFAAZE1U0102548/set/refresh"
+  command_topic: "leaf/MY_VIN/set/refresh"
   payload_on: "0"
   payload_off: "0"
