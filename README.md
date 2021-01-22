@@ -5,7 +5,7 @@ This works for my UK-based 2020 LEAF 40kWh car, and *should* work for any Europe
 
 This **will not** work for older "original-shape" LEAFs. Don't waste any time trying.
 
-You must have a working MQTT server on your LAN. The container uses `mosquitto` for publishing its data. I use this for interfacing with Home Assistant (running on a Synology NAS, hence the Docker container approach) via MQTT sensors: see `leaf-sensors.yaml` and `leaf-binary-sensors.yaml` for examples (and replace the MY_VIN with your VIN from the MQTT messages once you have the steps below working!).
+You must have a working MQTT server on your LAN. The container uses `mosquitto` for publishing its data. I use this for interfacing with Home Assistant (running on a Synology NAS, hence the Docker container approach) via MQTT sensors: see `leaf-sensors.yaml`, `leaf-binary-sensors.yaml` and `leaf-switches.yaml` for examples (and replace the MY_VIN with your VIN from the MQTT messages once you have the steps below working!).
 
 You must also have a working Docker installation, and be comfortable building images and running them as containers. Should work fine for `x86_64` architectures; others may need a little work, particularly for the `dart` installation step.
 
@@ -25,4 +25,4 @@ Please note that I created this for my own personal use and am not looking for f
     1. `MQTTUSER`: (optional) Username for your MQTT broker.
     1. `MQTTPASS`: (optional) Password for your MQTT broker.
 
-If all goes well, you should start to see the messages coming through on MQTT. By default, the refresh frequency is once every 30 minutes, increasing to every 10 minutes if connected and not charging, and every 5 minutes if charging. These can be changed at the end of `leaf2mqtt.sh` prior to building the Docker image if needed, but don't set the times too low or you may get blocked from Nissan's servers.
+If all goes well, you should start to see the messages coming through on MQTT. By default, the refresh frequency is once every 30 minutes, increasing to every 10 minutes if connected and not charging, and every 5 minutes if charging. There is also a "one-shot" update after setting the climate. These times can be changed at the end of `leaf2mqtt.sh` prior to building the Docker image if needed, but don't set the times too low or you may get blocked from Nissan's servers.
