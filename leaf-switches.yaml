@@ -1,0 +1,12 @@
+# LEAF climate
+# Note that it takes around 10 seconds to get a response from
+# Nissan's servers, and the response isn't guaranteed correct.
+- platform: mqtt
+  name: "LEAF climate control"
+  command_topic: "leaf/MY_VIN/set/climate"
+  payload_on: "19"
+  payload_off: "off"
+  state_topic: "leaf/MY_VIN/hvacrunning"
+  state_on: "true"
+  state_off: "false"
+
