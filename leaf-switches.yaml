@@ -12,3 +12,9 @@
   state_on: "true"
   state_off: "false"
 
+# LEAF update: refreshes the data, takes about 15s to work
+- platform: mqtt
+  name: "LEAF refresh"
+  command_topic: "leaf/SJNFAAZE1U0102548/set/refresh"
+  payload_on: "0"
+  payload_off: "0"
