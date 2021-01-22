@@ -1,5 +1,6 @@
 #!/bin/bash
 
+sleep 10
 echo "Running one-shot update..."
 cd /root
 if [ -z "$MQTTUSER" ]
