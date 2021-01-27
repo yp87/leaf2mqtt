@@ -1,4 +1,7 @@
 # leaf2mqtt
+
+**Use this at your own risk. No liability is accepted for any negative consequences.** 
+
 Builds a Docker container to pull in data from the Nissan Connect platform for the LEAF and publish over MQTT, using Tobias Westergaard Kjeldsen's excellent `dartnissanconnect` library which is also the basis for the MyLeaf app. Climate on/off control is available, but beware that it is slow and unreliable.
 
 This works for my UK-based 2020 LEAF 40kWh car, and *should* work for any European LEAF that uses the NissanConnect app ([Android](https://play.google.com/store/apps/details?id=eu.nissan.nissanconnect.services&hl=en_GB&gl=US) or [iOS](https://apps.apple.com/gb/app/nissanconnect-services/id1451280347)). Please ensure you have installed the app and can communicate with the car before proceeding with this.
@@ -25,6 +28,6 @@ Please note that I created this for my own personal use and am not looking for f
     1. `MQTTUSER`: (optional) Username for your MQTT broker.
     1. `MQTTPASS`: (optional) Password for your MQTT broker.
 
-If all goes well, you should start to see the messages coming through on MQTT. By default, the refresh frequency is once every 30 minutes, increasing to every 10 minutes if connected and not charging, and every 5 minutes if charging. There is also a "one-shot" update after setting the climate. These times can be changed at the end of `leaf2mqtt.sh` prior to building the Docker image if needed, but don't set the times too low or you may get blocked from Nissan's servers.
+If all goes well, you should start to see the messages coming through on MQTT. By default, the refresh frequency is once every two hours, increasing to every 10 minutes if connected and not charging, and every 5 minutes if charging. There is also a "one-shot" update after setting the climate. These times can be changed at the end of `leaf2mqtt.sh` prior to building the Docker image if needed, but don't set the times too low or you may get blocked from Nissan's servers.
 
 If you're not using the car frequently, stop the container or drastically reduce the update frequency, or you could well end up with a flat 12V battery.
