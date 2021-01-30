@@ -30,8 +30,8 @@ do
             sleep 600
         fi
     else
-        echo "Sleeping for 2 hours"
-        sleep 7200
+        echo "Sleeping for 12 hours"
+        sleep 43200
     fi
 done
 
