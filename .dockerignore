@@ -1,0 +1,7 @@
+# dart files to ignore
+.dart_tool/
+.packages
+build/
+
+#vscode files to ignore
+.vscode
