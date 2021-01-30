@@ -1,21 +1,17 @@
-import 'package:mqtt_client/mqtt_client.dart';
-import 'package:mqtt_client/mqtt_server_client.dart';
 import 'dart:io';
 
-class MqttClientWrapper {
-  MqttServerClient _mqttClient;
-  String _baseTopic;
-  var _converter = new AsciiPayloadConverter();
+import 'package:mqtt_client/mqtt_client.dart';
+import 'package:mqtt_client/mqtt_server_client.dart';
 
-  ConnectCallback onConnected;
+class MqttClientWrapper {
 
   MqttClientWrapper() {
-    var envVars = Platform.environment;
-    
-    var mqttHost = envVars['MQTT_HOST'] ?? '127.0.0.1';
-    var mqttPort = int.tryParse(envVars['MQTT_PORT'] ?? '1883') ?? 1883;
-    var mqttUser = envVars['MQTT_USERNAME'];
-    var mqttPassword = envVars['MQTT_PASSWORD'];
+    final Map<String, String> envVars = Platform.environment;
+
+    final String mqttHost = envVars['MQTT_HOST'] ?? '127.0.0.1';
+    final int mqttPort = int.tryParse(envVars['MQTT_PORT'] ?? '1883') ?? 1883;
+    final String mqttUser = envVars['MQTT_USERNAME'];
+    final String mqttPassword = envVars['MQTT_PASSWORD'];
     _baseTopic = envVars['MQTT_BASE_TOPIC'] ?? 'leaf';
 
     _mqttClient = MqttServerClient.withPort(mqttHost, 'leaf2mqtt', mqttPort);
@@ -24,19 +20,25 @@ class MqttClientWrapper {
     _connectWithRetry(mqttUser, mqttPassword);
   }
 
-  Future<void> _connectWithRetry(String mqttUser, mqttPassword) async {  
-    bool connected = false; 
+  MqttServerClient _mqttClient;
+  String _baseTopic;
+  final AsciiPayloadConverter _converter = AsciiPayloadConverter();
+
+  ConnectCallback onConnected;
+
+  Future<void> _connectWithRetry(String mqttUser, String mqttPassword) async {
+    bool connected = false;
     while (!connected) {
-      try { 
-        var a = await _mqttClient.connect(mqttUser, mqttPassword);
-        print('Mqtt connection code: ' + a.returnCode.toString());
-        connected = a.returnCode == MqttConnectReturnCode.connectionAccepted;
+      try {
+        final MqttClientConnectionStatus connectionCode  = await _mqttClient.connect(mqttUser, mqttPassword);
+        print('Mqtt connection code: ' + connectionCode.returnCode.toString());
+        connected = connectionCode.returnCode == MqttConnectReturnCode.connectionAccepted;
       } on Exception catch (e){
         print(e);
       }
 
       if(!connected){
-        await Future.delayed(new Duration(seconds: 5));
+        await Future<void>.delayed(const Duration(seconds: 5));
       }
     }
   }
