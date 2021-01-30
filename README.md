@@ -1,6 +1,6 @@
 # leaf2mqtt
 
-**This is a work in progress. See issues for mid-term goals**
+**This is a work in progress.**
 
 > :warning: If you're not using the car frequently, stop the container or drastically reduce the update frequency, or you could well end up with a flat 12V battery.
 
