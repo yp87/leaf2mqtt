@@ -3,5 +3,9 @@ version: 0.0.1
 dependencies:
   dartnissanconnectna:
     git: https://gitlab.com/tobiaswkjeldsen/dartnissanconnectna
+  dartnissanconnect:
+    git: https://gitlab.com/tobiaswkjeldsen/dartnissanconnect
+  dartcarwings:
+    git: https://gitlab.com/tobiaswkjeldsen/dartcarwings
 
   mqtt_client: ^8.1.0

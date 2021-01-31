@@ -33,7 +33,7 @@ class MqttClientWrapper {
         final MqttClientConnectionStatus connectionCode  = await _mqttClient.connect(mqttUser, mqttPassword);
         print('Mqtt connection code: ' + connectionCode.returnCode.toString());
         connected = connectionCode.returnCode == MqttConnectReturnCode.connectionAccepted;
-      } on Exception catch (e){
+      } catch (e){
         print(e);
       }
 

@@ -7,7 +7,7 @@ import 'leaf_vehicle.dart';
 class NissanConnectNASessionWrapper extends LeafSessionInternal {
   NissanConnectNASessionWrapper(this._countryCode);
 
-  final NissanConnectSession _session = NissanConnectSession(debug: false);
+  final NissanConnectSession _session = NissanConnectSession();
   final String _countryCode;
 
   @override

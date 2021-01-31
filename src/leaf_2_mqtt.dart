@@ -1,5 +1,4 @@
 import 'dart:io';
-
 import 'leaf/leaf_session.dart';
 import 'leaf/leaf_vehicle.dart';
 import 'mqtt_client_wrapper.dart';
@@ -28,7 +27,15 @@ Future<void> main() async {
   }
 
   final LeafSession session = LeafSessionFactory.createLeafSession(leafType);
-  await session.login(leafUser, leafPassword);
+
+  try {
+    await session.login(leafUser, leafPassword);
+  } catch (e, stacktrace) {
+    print('An error occured while logging in. Please make sure you have selected the right LEAF_TYPE, LEAF_USERNAME and LEAF_PASSWORD.');
+    print(e);
+    print(stacktrace);
+    exit(3);
+  }
 
   final MqttClientWrapper mqttClient = MqttClientWrapper();
   mqttClient.onConnected = () => _onConnected(mqttClient, session);

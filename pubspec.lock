@@ -29,6 +29,24 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "2.1.5"
+  dartcarwings:
+    dependency: "direct main"
+    description:
+      path: "."
+      ref: HEAD
+      resolved-ref: "1a9d04c31bb76f95b8f98fd1ae407271caf141d5"
+      url: "https://gitlab.com/tobiaswkjeldsen/dartcarwings"
+    source: git
+    version: "0.0.1"
+  dartnissanconnect:
+    dependency: "direct main"
+    description:
+      path: "."
+      ref: HEAD
+      resolved-ref: ea1817c3c2fdbfe7198577f0dd80ebaa8cc6c870
+      url: "https://gitlab.com/tobiaswkjeldsen/dartnissanconnect"
+    source: git
+    version: "0.0.1"
   dartnissanconnectna:
     dependency: "direct main"
     description:

@@ -1,5 +1,6 @@
 import 'leaf_vehicle.dart';
 import 'nissan_connect_na_wrapper.dart';
+import 'nissan_connect_wrapper.dart';
 
 enum LeafType {
   newerThanMay2019,
@@ -17,6 +18,10 @@ class LeafSessionFactory {
 
       case LeafType.olderUsa:
         return NissanConnectNASessionWrapper('US');
+        break;
+
+      case LeafType.newerThanMay2019:
+        return NissanConnectSessionWrapper();
         break;
 
       default:
