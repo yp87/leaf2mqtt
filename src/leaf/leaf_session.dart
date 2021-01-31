@@ -1,3 +1,6 @@
+import 'package:dartcarwings/dartcarwings.dart';
+
+import 'carwings_wrapper.dart';
 import 'leaf_vehicle.dart';
 import 'nissan_connect_na_wrapper.dart';
 import 'nissan_connect_wrapper.dart';
@@ -6,12 +9,18 @@ enum LeafType {
   newerThanMay2019,
   olderCanada,
   olderUsa,
-  olderOther
+  // olderEurope,
+  // olderAustralia,
+  // olderJapan,
 }
 
 class LeafSessionFactory {
   static LeafSession createLeafSession(LeafType leafType) {
     switch (leafType) {
+      case LeafType.newerThanMay2019:
+        return NissanConnectSessionWrapper();
+        break;
+
       case LeafType.olderCanada:
         return NissanConnectNASessionWrapper('CA');
         break;
@@ -20,12 +29,18 @@ class LeafSessionFactory {
         return NissanConnectNASessionWrapper('US');
         break;
 
-      case LeafType.newerThanMay2019:
-        return NissanConnectSessionWrapper();
+      // Need to have a working blowfish encryption.
+      /*case LeafType.olderEurope:
+        return CarwingsWrapper(CarwingsRegion.Europe);
         break;
 
-      default:
-        throw ArgumentError.value(leafType, 'leafType', 'this LeafType is not supported yet.');
+      case LeafType.olderJapan:
+        return CarwingsWrapper(CarwingsRegion.Japan);
+        break;
+
+      case LeafType.olderAustralia:
+        return CarwingsWrapper(CarwingsRegion.Australia);
+        break;*/
     }
   }
 }

@@ -15,14 +15,14 @@ class NissanConnectSessionWrapper extends LeafSessionInternal {
 
     int vehicleNumber = 0;
     final List<VehicleInternal> vehicles = _session.vehicles.map((NissanConnectVehicle vehicle) =>
-      NissanConnectNAVehicleWrapper(vehicle, vehicleNumber++)).toList();
+      NissanConnectVehicleWrapper(vehicle, vehicleNumber++)).toList();
 
     setVehicles(vehicles);
   }
 }
 
-class NissanConnectNAVehicleWrapper extends VehicleInternal {
-  NissanConnectNAVehicleWrapper(this._vehicle, int vehicleNumber) :
+class NissanConnectVehicleWrapper extends VehicleInternal {
+  NissanConnectVehicleWrapper(this._vehicle, int vehicleNumber) :
     super(_vehicle.nickname.toString(), _vehicle.vin.toString(), vehicleNumber == 0);
 
   final NissanConnectVehicle _vehicle;
