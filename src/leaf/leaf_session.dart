@@ -29,6 +29,9 @@ class LeafSessionFactory {
         return NissanConnectNASessionWrapper('US');
         break;
 
+      default:
+        throw ArgumentError.value(leafType, 'leafType', 'this LeafType is not supported yet.');
+
       // Need to have a working blowfish encryption.
       /*case LeafType.olderEurope:
         return CarwingsWrapper(CarwingsRegion.Europe);

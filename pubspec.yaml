@@ -8,4 +8,4 @@ dependencies:
   dartcarwings:
     git: https://gitlab.com/tobiaswkjeldsen/dartcarwings
 
-  mqtt_client: ^8.1.0
+  mqtt_client: ^7.0.0

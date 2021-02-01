@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:io';
 
 import 'leaf/leaf_session.dart';
@@ -50,15 +51,34 @@ Future<void> startUpdateLoop(LeafSession session, MqttClientWrapper mqttClient, 
   final int updateIntervalMinutes = int.tryParse(envVars['UPDATE_INTERVAL_MINUTES']  ?? '60') ?? 60;
   final int chargingUpdateIntervalMinutes = int.tryParse(envVars['CHARGING_UPDATE_INTERVAL_MINUTES'] ?? '15') ?? 15;
 
-  while (true) {
-    final Vehicle vehicle =
-      session.vehicles.firstWhere((Vehicle vehicle) => vehicle.vin == vin, orElse: () => null);
+  final Vehicle vehicle =
+  session.vehicles.firstWhere((Vehicle vehicle) => vehicle.vin == vin, orElse: () => null);
 
-    if (vehicle == null) {
-      print('Did not found vehicle with vin $vin');
-      break;
+  if (vehicle == null) {
+    print('Did not found vehicle with vin $vin');
+    return;
+  }
+
+  void subscribe(String topic, void Function(String payload) handler) {
+    mqttClient.subscribeTopic('$vin/$topic', handler);
+
+    if (session.vehicles[0].vin == vin) {
+      // first vehicle also can send command without the vin
+      mqttClient.subscribeTopic(topic, handler);
     }
+  }
 
+  Completer<void> forceUpdateAllCompleter;
+  subscribe('command', (String payload) {
+      switch (payload) {
+        case 'update':
+            forceUpdateAllCompleter?.complete();
+          break;
+        default:
+      }
+    });
+
+  while (true) {
     mqttClient.publishStates(vehicle.lastVehicleStatus);
 
     final List<Future<void>> fetchFutures = <Future<void>>[];
@@ -73,7 +93,12 @@ Future<void> startUpdateLoop(LeafSession session, MqttClientWrapper mqttClient, 
       calculatedUpdateIntervalMinutes = chargingUpdateIntervalMinutes;
     }
 
-    await Future<void>.delayed(Duration(minutes: calculatedUpdateIntervalMinutes));
+    forceUpdateAllCompleter = Completer<void>();
+    await Future.any(<Future<void>>
+      [
+        Future<void>.delayed(Duration(minutes: calculatedUpdateIntervalMinutes)),
+        forceUpdateAllCompleter.future
+      ]);
   }
 }
 

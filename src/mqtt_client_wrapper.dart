@@ -3,6 +3,8 @@ import 'dart:io';
 import 'package:mqtt_client/mqtt_client.dart';
 import 'package:mqtt_client/mqtt_server_client.dart';
 
+typedef PayloadReceivedhandler = void Function(String payload);
+
 class MqttClientWrapper {
 
   MqttClientWrapper() {
@@ -24,6 +26,8 @@ class MqttClientWrapper {
   String _baseTopic;
   final AsciiPayloadConverter _converter = AsciiPayloadConverter();
 
+  final Map<String, List<PayloadReceivedhandler>> _payloadReceivedHandlers = <String, List<PayloadReceivedhandler>>{};
+
   ConnectCallback onConnected;
 
   Future<void> _connectWithRetry(String mqttUser, String mqttPassword) async {
@@ -37,19 +41,50 @@ class MqttClientWrapper {
         print(e);
       }
 
-      if(!connected){
+      if(connected){
+        _mqttClient.subscribe('$_baseTopic/command/#', MqttQos.exactlyOnce);
+        _mqttClient.subscribe('$_baseTopic/+/command/#', MqttQos.exactlyOnce);
+        _mqttClient.updates.listen(_receiveData);
+      } else {
         await Future<void>.delayed(const Duration(seconds: 5));
       }
     }
+  }
+
+  void subscribeTopic(String topic, PayloadReceivedhandler handler){
+    _payloadReceivedHandlers.update(
+      '$_baseTopic/$topic',
+      (List<PayloadReceivedhandler> handlers) { handlers.add(handler); return handlers; },
+      ifAbsent: () => <PayloadReceivedhandler> [handler]);
   }
 
   void publishMessage(String topic, String value) {
     if (!(topic?.isEmpty ?? true) && !(value?.isEmpty ?? true) )
     {
       try {
-        _mqttClient.publishMessage('$_baseTopic/$topic', MqttQos.atLeastOnce, _converter.convertToBytes(value), retain: true);
+        _mqttClient.publishMessage(
+          '$_baseTopic/$topic',
+          MqttQos.atLeastOnce,
+          _converter.convertToBytes(value), retain: true);
       } on ConnectionException catch (_) {
         // does not matter, we will send back latest states on reconnect.
+      }
+    }
+  }
+
+  void _receiveData(List<MqttReceivedMessage<MqttMessage>> messages) {
+    // Using fromList because I am not able to create a Uint8Buffer for some reason.
+    final MqttByteBuffer byteBuffer = MqttByteBuffer.fromList(List<int>.empty());
+    for (final MqttReceivedMessage<MqttMessage> message in messages) {
+      message.payload.writeTo(byteBuffer);
+      final String payloadWithTopic = MqttPublishPayload.bytesToStringAsString(byteBuffer.buffer);
+      final String payload =
+        payloadWithTopic.substring(payloadWithTopic.indexOf(message.topic) + message.topic.length);
+
+      final List<PayloadReceivedhandler> handlers =
+        _payloadReceivedHandlers[message.topic] ?? List<PayloadReceivedhandler>.empty();
+      for (final PayloadReceivedhandler handler in handlers) {
+        handler(payload);
       }
     }
   }
