@@ -8,12 +8,15 @@ abstract class BuilderBase {
 
   String get baseTopic;
 
-  Map<String, String> addInfo(String key, String value) {
+  Map<String, String> addInfo(String key, dynamic value) {
     final Map<String, String> modifiedInfo = Map<String, String>.from(_info);
-    modifiedInfo['$baseTopic/$key'] = value;
+    modifiedInfo['$baseTopic/$key'] = value.toString();
     return modifiedInfo;
   }
 
+  String removeUnitFromValue(String valueWithUnit) =>
+    valueWithUnit.split(' ')[0];
+
   Map<String, String> build() =>
-    addInfo('received_status_utc', DateTime.now().toUtc().toIso8601String());
+    addInfo('lastReceivedDateTimeUtc', DateTime.now().toUtc().toIso8601String());
 }

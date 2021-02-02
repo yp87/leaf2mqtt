@@ -38,6 +38,15 @@ class NissanConnectVehicleWrapper extends VehicleInternal {
            .withChargePercentage(percentage ?? -1)
            .withConnectedStatus(battery.isConnected)
            .withChargingStatus(battery.isCharging)
+           .withCruisingRangeAcOffKm(battery.cruisingRangeAcOffKm)
+           .withCruisingRangeAcOffMiles(battery.cruisingRangeAcOffMiles)
+           .withCruisingRangeAcOnKm(battery.cruisingRangeAcOnKm)
+           .withCruisingRangeAcOnMiles(battery.cruisingRangeAcOnMiles)
+           .withLastUpdatedDateTime(battery.dateTime)
+           .withTimeToFullL2(battery.timeToFullNormal)
+           .withTimeToFullL2_6kw(battery.timeToFullFast)
+           .withTimeToFullTrickle(battery.timeToFullSlow)
+           .withChargingSpeed(battery.chargingSpeed)
            .build());
   }
 }

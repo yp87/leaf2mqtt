@@ -44,6 +44,15 @@ class CarwingsVehicleWrapper extends VehicleInternal {
            .withChargePercentage(((battery.batteryLevel * 100) / battery.batteryLevelCapacity).round())
            .withConnectedStatus(battery.isConnected)
            .withChargingStatus(battery.isCharging)
+           .withCapacity(battery.batteryLevelCapacity)
+           .withCruisingRangeAcOffKm(battery.cruisingRangeAcOffKm)
+           .withCruisingRangeAcOffMiles(battery.cruisingRangeAcOffMiles)
+           .withCruisingRangeAcOnKm(battery.cruisingRangeAcOnKm)
+           .withCruisingRangeAcOnMiles(battery.cruisingRangeAcOnMiles)
+           .withLastUpdatedDateTime(battery.dateTime)
+           .withTimeToFullL2(battery.timeToFullL2)
+           .withTimeToFullL2_6kw(battery.timeToFullL2_6kw)
+           .withTimeToFullTrickle(battery.timeToFullTrickle)
            .build());
   }
 }

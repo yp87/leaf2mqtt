@@ -43,64 +43,65 @@ Future<void> main() async {
   mqttClient.onConnected = () => _onConnected(mqttClient, session);
 
   // Starting one loop per vehicle because each can have different interval depending on their state.
-  await Future.wait(session.vehicles.map((Vehicle vehicle) => startUpdateLoop(session, mqttClient, vehicle.vin)));
+  await Future.wait(session.vehicles.map((Vehicle vehicle) => startUpdateLoop(session, mqttClient, vehicle)));
 }
 
-Future<void> startUpdateLoop(LeafSession session, MqttClientWrapper mqttClient, String vin) async {
+Future<void> startUpdateLoop(LeafSession session, MqttClientWrapper mqttClient, Vehicle vehicle) async {
   final Map<String, String> envVars = Platform.environment;
   final int updateIntervalMinutes = int.tryParse(envVars['UPDATE_INTERVAL_MINUTES']  ?? '60') ?? 60;
   final int chargingUpdateIntervalMinutes = int.tryParse(envVars['CHARGING_UPDATE_INTERVAL_MINUTES'] ?? '15') ?? 15;
 
-  final Vehicle vehicle =
-  session.vehicles.firstWhere((Vehicle vehicle) => vehicle.vin == vin, orElse: () => null);
-
-  if (vehicle == null) {
-    print('Did not found vehicle with vin $vin');
-    return;
-  }
-
-  void subscribe(String topic, void Function(String payload) handler) {
-    mqttClient.subscribeTopic('$vin/$topic', handler);
-
-    if (session.vehicles[0].vin == vin) {
-      // first vehicle also can send command without the vin
-      mqttClient.subscribeTopic(topic, handler);
-    }
-  }
-
-  Completer<void> forceUpdateAllCompleter;
-  subscribe('command', (String payload) {
-      switch (payload) {
-        case 'update':
-            forceUpdateAllCompleter?.complete();
-          break;
-        default:
-      }
-    });
+  subscribeToCommands(mqttClient, vehicle, session);
 
   while (true) {
-    mqttClient.publishStates(vehicle.lastVehicleStatus);
-
-    final List<Future<void>> fetchFutures = <Future<void>>[];
-
-    fetchFutures.add(
-      vehicle.fetchBatteryStatus().then((_) => mqttClient.publishStates(vehicle.lastBatteryStatus)));
-
-    await Future.wait(fetchFutures);
+    await fetchAndPublishAllStatus(mqttClient, vehicle);
 
     int calculatedUpdateIntervalMinutes = updateIntervalMinutes;
     if (vehicle.isCharging && chargingUpdateIntervalMinutes < calculatedUpdateIntervalMinutes) {
       calculatedUpdateIntervalMinutes = chargingUpdateIntervalMinutes;
     }
 
-    forceUpdateAllCompleter = Completer<void>();
-    await Future.any(<Future<void>>
-      [
-        Future<void>.delayed(Duration(minutes: calculatedUpdateIntervalMinutes)),
-        forceUpdateAllCompleter.future
-      ]);
+    await Future<void>.delayed(Duration(minutes: calculatedUpdateIntervalMinutes));
   }
 }
+
+void subscribeToCommands(MqttClientWrapper mqttClient, Vehicle vehicle, LeafSession session) {
+  void subscribe(String topic, void Function(String payload) handler) {
+    mqttClient.subscribeTopic('${vehicle.vin}/$topic', handler);
+
+    if (session.vehicles[0].vin == vehicle.vin) {
+      // first vehicle also can send command without the vin
+      mqttClient.subscribeTopic(topic, handler);
+    }
+  }
+
+  subscribe('command', (String payload) {
+      switch (payload) {
+        case 'update':
+            fetchAndPublishAllStatus(mqttClient, vehicle);
+          break;
+        default:
+      }
+    });
+
+  subscribe('command/battery', (String payload) {
+      switch (payload) {
+        case 'update':
+            fetchAndPublishBatteryStatus(mqttClient, vehicle);
+          break;
+        default:
+      }
+    });
+}
+
+Future<void> fetchAndPublishBatteryStatus(MqttClientWrapper mqttClient, Vehicle vehicle) =>
+   vehicle.fetchBatteryStatus().then((_) => mqttClient.publishStates(vehicle.lastBatteryStatus));
+
+Future<void> fetchAndPublishAllStatus(MqttClientWrapper mqttClient, Vehicle vehicle) =>
+  Future.wait([
+    Future<void>(() => mqttClient.publishStates(vehicle.lastVehicleStatus)),
+    fetchAndPublishBatteryStatus(mqttClient, vehicle)
+  ]);
 
 void _onConnected(MqttClientWrapper mqttClient, LeafSession leafSession) {
   mqttClient.publishStates(leafSession.getAllLastKnownStatus());

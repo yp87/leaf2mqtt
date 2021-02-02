@@ -1,3 +1,5 @@
+import 'package:dartnissanconnect/dartnissanconnect.dart';
+
 import 'leaf_builder_base.dart';
 
 class BatteryInfoBuilder extends BuilderBase {
@@ -8,11 +10,47 @@ class BatteryInfoBuilder extends BuilderBase {
   String get baseTopic => 'battery';
 
   BatteryInfoBuilder withChargePercentage(int chargePercentage) =>
-    BatteryInfoBuilder._withInfo(addInfo('percentage', chargePercentage.toString()));
+    _withInfo('percentage', chargePercentage);
 
   BatteryInfoBuilder withChargingStatus(bool charging) =>
-    BatteryInfoBuilder._withInfo(addInfo('charging', charging.toString()));
+    _withInfo('charging', charging);
 
   BatteryInfoBuilder withConnectedStatus(bool connected) =>
-    BatteryInfoBuilder._withInfo(addInfo('connected', connected.toString()));
+    _withInfo('connected', connected);
+
+  BatteryInfoBuilder withCapacity(double capacity) =>
+    _withInfo('capacity', capacity);
+
+  BatteryInfoBuilder withCruisingRangeAcOffKm(String cruisingRangeAcOffKm) =>
+    _withInfo('cruisingRangeAcOffKm', removeUnitFromValue(cruisingRangeAcOffKm));
+
+  BatteryInfoBuilder withCruisingRangeAcOffMiles(String cruisingRangeAcOffMiles) =>
+    _withInfo('cruisingRangeAcOffMiles', removeUnitFromValue(cruisingRangeAcOffMiles));
+
+  BatteryInfoBuilder withCruisingRangeAcOnKm(String cruisingRangeAcOnKm) =>
+    _withInfo('cruisingRangeAcOnKm', removeUnitFromValue(cruisingRangeAcOnKm));
+
+  BatteryInfoBuilder withCruisingRangeAcOnMiles(String cruisingRangeAcOnMiles) =>
+    _withInfo('cruisingRangeAcOnMiles', removeUnitFromValue(cruisingRangeAcOnMiles));
+
+  BatteryInfoBuilder withLastUpdatedDateTime(DateTime lastUpdatedDateTime) =>
+    _withInfo('lastUpdatedDateTimeUtc', lastUpdatedDateTime.toUtc().toIso8601String());
+
+  BatteryInfoBuilder withTimeToFullL2(Duration timeToFullL2) =>
+    _addIfNotZero('timeToFullL2InMinutes', timeToFullL2);
+
+  BatteryInfoBuilder withTimeToFullL2_6kw(Duration timeToFullL2_6kw) =>
+    _addIfNotZero('timeToFullL2_6kwInMinutes', timeToFullL2_6kw);
+
+  BatteryInfoBuilder withTimeToFullTrickle(Duration timeToFullTrickle) =>
+    _addIfNotZero('timeToFullTrickleInMinutes', timeToFullTrickle);
+
+  BatteryInfoBuilder withChargingSpeed(ChargingSpeed chargingSpeed) =>
+    _withInfo('chargingSpeed', chargingSpeed);
+
+  BatteryInfoBuilder _addIfNotZero(String infoName, Duration value) =>
+    value.inMinutes == 0 ? this : _withInfo(infoName, value.inMinutes);
+
+  BatteryInfoBuilder _withInfo(String infoName, dynamic value) =>
+      BatteryInfoBuilder._withInfo(addInfo(infoName, value));
 }

@@ -31,10 +31,20 @@ class NissanConnectNAVehicleWrapper extends VehicleInternal {
   @override
   Future<Map<String, String>> fetchBatteryStatus() async {
     final NissanConnectBattery battery = await _vehicle.requestBatteryStatus();
+
     return lastBatteryStatus = prependVin(BatteryInfoBuilder()
            .withChargePercentage(((battery.batteryLevel * 100) / battery.batteryLevelCapacity).round())
            .withConnectedStatus(battery.isConnected)
            .withChargingStatus(battery.isCharging)
+           .withCapacity(battery.batteryLevelCapacity.toDouble())
+           .withCruisingRangeAcOffKm(battery.cruisingRangeAcOffKm)
+           .withCruisingRangeAcOffMiles(battery.cruisingRangeAcOffMiles)
+           .withCruisingRangeAcOnKm(battery.cruisingRangeAcOnKm)
+           .withCruisingRangeAcOnMiles(battery.cruisingRangeAcOnMiles)
+           .withLastUpdatedDateTime(battery.dateTime)
+           .withTimeToFullL2(battery.timeToFullL2)
+           .withTimeToFullL2_6kw(battery.timeToFullL2_6kw)
+           .withTimeToFullTrickle(battery.timeToFullTrickle)
            .build());
   }
 }
