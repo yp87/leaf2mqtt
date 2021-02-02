@@ -25,20 +25,20 @@ MQTT topics using the default `MQTT_BASE_TOPIC` (`leaf`):
     leaf/{vin}/nickname # [String] The reported nickname of the leaf
     leaf/{vin}/vin      # [String] The reported vin of the leaf
 
-    leaf/{vin}/battery/percentage # [Integer 0 to 100] The last reported battery charge of the leaf
-    leaf/{vin}/battery/connected  # [Boolean] True if the leaf is reported as currently connected. False otherwise
-    leaf/{vin}/battery/charging   # [Boolean] True if the leaf is reported as currently charging. False otherwise
-    leaf/{vin}/battery/capacity   # [Double] The reported total capacity of the battery
+    leaf/{vin}/battery/percentage    # [Integer 0 to 100] The last reported battery charge of the leaf
+    leaf/{vin}/battery/connected     # [Boolean] True if the leaf is reported as currently connected. False otherwise
+    leaf/{vin}/battery/charging      # [Boolean] True if the leaf is reported as currently charging. False otherwise
+    leaf/{vin}/battery/capacity      # [Double] The reported total capacity of the battery
     leaf/{vin}/battery/chargingSpeed # [None, Slow, Normal or Fast] 
-    leaf/{vin}/battery/cruisingRangeAcOffKm # [Integer] Range left with climate off in kilometers as estimated by the Leaf
-    leaf/{vin}/battery/cruisingRangeAcOffMiles # [Integer] Range left with climate off in miles as estimated by the Leaf
-    leaf/{vin}/battery/cruisingRangeAcOnKm # [Integer] Range left with climate on in kilometers as estimated by the Leaf
-    leaf/{vin}/battery/cruisingRangeAcOnMiles # [Integer] Range left with climate on in miles as estimated by the Leaf
+    leaf/{vin}/battery/cruisingRangeAcOffKm       # [Integer] Range left with climate off in kilometers as estimated by the Leaf
+    leaf/{vin}/battery/cruisingRangeAcOffMiles    # [Integer] Range left with climate off in miles as estimated by the Leaf
+    leaf/{vin}/battery/cruisingRangeAcOnKm        # [Integer] Range left with climate on in kilometers as estimated by the Leaf
+    leaf/{vin}/battery/cruisingRangeAcOnMiles     # [Integer] Range left with climate on in miles as estimated by the Leaf
     leaf/{vin}/battery/timeToFullTrickleInMinutes # [Integer] The reported time in minutes to fully charge when trickling (~1kw)
-    leaf/{vin}/battery/timeToFullL2InMinutes # [Integer] The reported time in minutes to fully charge when charging in half speed L2 (~3kw)
-    leaf/{vin}/battery/timeToFullL2_6kwInMinutes # [Integer] The reported time in minutes to fully charge when charging in full speed L2 (~6kw)
-    leaf/{vin}/battery/lastUpdatedDateTimeUtc # [Iso8601 UTC] The datetime when the last battery values were updated
-    leaf/{vin}/battery/lastReceivedDateTimeUtc # [Iso8601 UTC] The datetime when leaf2mqtt received the last battery values
+    leaf/{vin}/battery/timeToFullL2InMinutes      # [Integer] The reported time in minutes to fully charge when charging in half speed L2 (~3kw)
+    leaf/{vin}/battery/timeToFullL2_6kwInMinutes  # [Integer] The reported time in minutes to fully charge when charging in full speed L2 (~6kw)
+    leaf/{vin}/battery/lastUpdatedDateTimeUtc     # [Iso8601 UTC] The datetime when the last battery values were updated
+    leaf/{vin}/battery/lastReceivedDateTimeUtc    # [Iso8601 UTC] The datetime when leaf2mqtt received the last battery values
 
 :information_source: note that the status for the first vehicle will also be published on the same topic without the {vin}
 
