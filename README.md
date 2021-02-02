@@ -22,25 +22,49 @@ Running the image:
 
 MQTT topics using the default `MQTT_BASE_TOPIC` (`leaf`):    
 
-    leaf/{vin}/nickname # [String] The reported nickname of the leaf
-    leaf/{vin}/vin      # [String] The reported vin of the leaf
+## Status and Commands
 
-    leaf/{vin}/battery/percentage    # [Integer 0 to 100] The last reported battery charge of the leaf
-    leaf/{vin}/battery/connected     # [Boolean] True if the leaf is reported as currently connected. False otherwise
-    leaf/{vin}/battery/charging      # [Boolean] True if the leaf is reported as currently charging. False otherwise
-    leaf/{vin}/battery/capacity      # [Double] The reported total capacity of the battery
-    leaf/{vin}/battery/chargingSpeed # [None, Slow, Normal or Fast] 
-    leaf/{vin}/battery/cruisingRangeAcOffKm       # [Integer] Range left with climate off in kilometers as estimated by the Leaf
-    leaf/{vin}/battery/cruisingRangeAcOffMiles    # [Integer] Range left with climate off in miles as estimated by the Leaf
-    leaf/{vin}/battery/cruisingRangeAcOnKm        # [Integer] Range left with climate on in kilometers as estimated by the Leaf
-    leaf/{vin}/battery/cruisingRangeAcOnMiles     # [Integer] Range left with climate on in miles as estimated by the Leaf
-    leaf/{vin}/battery/timeToFullTrickleInMinutes # [Integer] The reported time in minutes to fully charge when trickling (~1kw)
-    leaf/{vin}/battery/timeToFullL2InMinutes      # [Integer] The reported time in minutes to fully charge when charging in half speed L2 (~3kw)
-    leaf/{vin}/battery/timeToFullL2_6kwInMinutes  # [Integer] The reported time in minutes to fully charge when charging in full speed L2 (~6kw)
-    leaf/{vin}/battery/lastUpdatedDateTimeUtc     # [Iso8601 UTC] The datetime when the last battery values were updated
-    leaf/{vin}/battery/lastReceivedDateTimeUtc    # [Iso8601 UTC] The datetime when leaf2mqtt received the last battery values
+### General
+#### Status
+| Topic  | Type | Description |
+| ------ | ---- | ----------- |
+| leaf/{vin}/nickname | String | The reported nickname of the leaf  |
+| leaf/{vin}/vin  | String | The reported vin of the leaf  |
 
-:information_source: note that the status for the first vehicle will also be published on the same topic without the {vin}
+#### Commands
+| Topic | Payload | Description |
+| ----- | ------- | ----------- |
+| leaf/{vin} | update | Request an update for all status  |
+
+
+### Battery
+#### Status
+| Topic  | Type | Description |
+| ------ | ---- | ----------- |
+| leaf/{vin}/battery/percentage | Integer | The last reported battery charge of the leaf |
+|leaf/{vin}/battery/connected| Boolean | True if the leaf is reported as currently connected. False otherwise |
+|leaf/{vin}/battery/charging| Boolean | True if the leaf is reported as currently charging. False otherwise |
+|leaf/{vin}/battery/capacity| Double | The reported total capacity of the battery |
+|leaf/{vin}/battery/chargingSpeed| String | can be one of None, Slow, Normal or Fast  |
+|leaf/{vin}/battery/cruisingRangeAcOffKm | Integer | Range left with climate off in kilometers as estimated by the Leaf |
+|leaf/{vin}/battery/cruisingRangeAcOffMiles | Integer | Range left with climate off in miles as estimated by the Leaf |
+|leaf/{vin}/battery/cruisingRangeAcOnKm | Integer | Range left with climate on in kilometers as estimated by the Leaf |
+|leaf/{vin}/battery/cruisingRangeAcOnMiles | Integer | Range left with climate on in miles as estimated by the Leaf |
+|leaf/{vin}/battery/timeToFullTrickleInMinutes | Integer | The reported time in minutes to fully charge when trickling (~1kw) |
+|leaf/{vin}/battery/timeToFullL2InMinutes | Integer | The reported time in minutes to fully charge when charging in half speed L2 (~3kw) |
+|leaf/{vin}/battery/timeToFullL2_6kwInMinutes | Integer | The reported time in minutes to fully charge when charging in full speed L2 (~6kw) |
+|leaf/{vin}/battery/lastUpdatedDateTimeUtc | Iso8601 UTC | The datetime when the last battery values were updated |
+|leaf/{vin}/battery/lastReceivedDateTimeUtc | Iso8601 UTC | The datetime when leaf2mqtt received the last battery values |
+
+#### Commands
+| Topic | Payload | Description |
+| ----- | ------- | ----------- |
+| leaf/{vin}/battery | update | Request an update for all battery status  |
+    
+
+:information_source: note that the status and commands for the first vehicle are also supported on the same topic without the {vin}
+
+:warning: Not all status and commands are supported for each leaf type
 
 ## Credits
 - Forked from [Troon/leaf2mqtt](https://github.com/Troon/leaf2mqtt). Thank you for the inspiration!
