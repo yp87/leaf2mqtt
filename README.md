@@ -63,9 +63,9 @@ MQTT topics using the default `MQTT_BASE_TOPIC` (`leaf`):
 | leaf/{vin}/command/battery | charge | Request the Leaf to start charging  |
     
 
-:information_source: note that the status and commands for the first vehicle are also supported on the same topic without the {vin}
+:information_source: note that the status and commands for the first vehicle are also supported on the same topic without the {vin}.
 
-:warning: Not all status and commands are supported for each leaf type
+:warning: Not all status and commands are supported for a given leaf type due to Carwings, NissanConnectNA or NissanConnect api limitations.
 
 ## Credits
 - Forked from [Troon/leaf2mqtt](https://github.com/Troon/leaf2mqtt). Thank you for the inspiration!
