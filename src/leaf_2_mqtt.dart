@@ -89,6 +89,11 @@ void subscribeToCommands(MqttClientWrapper mqttClient, Vehicle vehicle, LeafSess
         case 'update':
             fetchAndPublishBatteryStatus(mqttClient, vehicle);
           break;
+        case 'charge':
+            vehicle.startCharging().then(
+              (_) => Future<void>.delayed(const Duration(seconds: 5)).then(
+                (_) => fetchAndPublishBatteryStatus(mqttClient, vehicle)));
+          break;
         default:
       }
     });

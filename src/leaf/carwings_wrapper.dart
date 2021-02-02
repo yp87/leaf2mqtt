@@ -55,4 +55,8 @@ class CarwingsVehicleWrapper extends VehicleInternal {
            .withTimeToFullTrickle(battery.timeToFullTrickle)
            .build());
   }
+
+  @override
+  Future<void> startCharging() =>
+    _vehicle.requestChargingStart(DateTime.now().add(const Duration(seconds: 5)));
 }

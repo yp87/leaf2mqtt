@@ -55,6 +55,8 @@ abstract class Vehicle {
 
   Map<String, String> lastBatteryStatus = <String, String>{};
   Future<void> fetchBatteryStatus();
+
+  Future<void> startCharging();
 }
 
 

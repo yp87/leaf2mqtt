@@ -2,13 +2,13 @@
 
 **This is a work in progress.**
 
-> :warning: If you're not using the car frequently, stop the container or drastically reduce the update frequency, or you could well end up with a flat 12V battery.
+> :warning: If you're not using the Leaf frequently, stop the container or drastically reduce the update frequency, or you could well end up with a flat 12V battery.
 
 This works for my Canadian made in 2018 LEAF 40kWh car. Please open an issue if it also works for your different model and/or region, I will then update this list.
 
 You must have a working MQTT broker on your LAN.
 
-Should work with multiple cars, but it is untested. Please open an issue with feedback if possible.
+Should work with multiple Leafs, but it is untested. Please open an issue with feedback if possible.
 
 More documentation will follow.
 
@@ -34,7 +34,7 @@ MQTT topics using the default `MQTT_BASE_TOPIC` (`leaf`):
 #### Commands
 | Topic | Payload | Description |
 | ----- | ------- | ----------- |
-| leaf/{vin} | update | Request an update for all status  |
+| leaf/{vin}/command | update | Request an update for all status  |
 
 
 ### Battery
@@ -59,7 +59,8 @@ MQTT topics using the default `MQTT_BASE_TOPIC` (`leaf`):
 #### Commands
 | Topic | Payload | Description |
 | ----- | ------- | ----------- |
-| leaf/{vin}/battery | update | Request an update for all battery status  |
+| leaf/{vin}/command/battery | update | Request an update for all battery status  |
+| leaf/{vin}/command/battery | charge | Request the Leaf to start charging  |
     
 
 :information_source: note that the status and commands for the first vehicle are also supported on the same topic without the {vin}

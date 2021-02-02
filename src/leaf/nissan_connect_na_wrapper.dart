@@ -47,4 +47,8 @@ class NissanConnectNAVehicleWrapper extends VehicleInternal {
            .withTimeToFullTrickle(battery.timeToFullTrickle)
            .build());
   }
+
+  @override
+  Future<bool> startCharging() =>
+    _vehicle.requestChargingStart();
 }

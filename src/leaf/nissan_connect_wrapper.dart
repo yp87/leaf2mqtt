@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:dartnissanconnect/dartnissanconnect.dart';
 
 import 'builder/leaf_battery_builder.dart';
@@ -49,4 +51,8 @@ class NissanConnectVehicleWrapper extends VehicleInternal {
            .withChargingSpeed(battery.chargingSpeed)
            .build());
   }
+
+  @override
+  Future<void> startCharging() =>
+    _vehicle.requestChargingStart();
 }
