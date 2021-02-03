@@ -15,7 +15,6 @@ class MqttClientWrapper {
     _baseTopic = envVars['MQTT_BASE_TOPIC'] ?? 'leaf';
 
     _mqttClient = MqttServerClient.withPort(mqttHost, 'leaf2mqtt', mqttPort);
-    _mqttClient.autoReconnect = true;
   }
 
   MqttServerClient _mqttClient;
@@ -30,7 +29,10 @@ class MqttClientWrapper {
 
   Future<void> connectWithRetry(String mqttUser, String mqttPassword) async {
     _mqttClient.onConnected = onConnected;
-    _mqttClient.onDisconnected = onDisconnected;
+
+    // Set to null to prevent multiple connectWithRetry
+    // calls since onDisconnected is called when a connection fails.
+    _mqttClient.onDisconnected = null;
 
     bool connected = false;
     while (!connected) {
@@ -42,13 +44,15 @@ class MqttClientWrapper {
         print(e);
       }
 
-      if(!connected){
+      if(connected){
+        _mqttClient.onDisconnected = () => connectWithRetry(mqttUser, mqttPassword);
+      } else {
         await Future<void>.delayed(const Duration(seconds: 5));
       }
     }
   }
 
-  void subscribeToCommands() {
+  void subscribeToCommandTopic() {
     _mqttClient.subscribe('$_baseTopic/command/#', MqttQos.exactlyOnce);
     _mqttClient.subscribe('$_baseTopic/+/command/#', MqttQos.exactlyOnce);
     _mqttClient.updates.listen(_receiveData);

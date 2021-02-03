@@ -154,7 +154,7 @@ Future<void> fetchAndPublishAllStatus(MqttClientWrapper mqttClient, Vehicle vehi
   ]);
 
 void _onConnected(MqttClientWrapper mqttClient, LeafSession leafSession) {
-  mqttClient.subscribeToCommands();
+  mqttClient.subscribeToCommandTopic();
   mqttClient.publishStates(leafSession.getAllLastKnownStatus());
 }
 
