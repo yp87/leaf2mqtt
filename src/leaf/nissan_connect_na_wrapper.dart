@@ -32,23 +32,35 @@ class NissanConnectNAVehicleWrapper extends VehicleInternal {
   Future<Map<String, String>> fetchBatteryStatus() async {
     final NissanConnectBattery battery = await _vehicle.requestBatteryStatus();
 
-    return lastBatteryStatus = prependVin(BatteryInfoBuilder()
-           .withChargePercentage(((battery.batteryLevel * 100) / battery.batteryLevelCapacity).round())
-           .withConnectedStatus(battery.isConnected)
-           .withChargingStatus(battery.isCharging)
-           .withCapacity(battery.batteryLevelCapacity.toDouble())
-           .withCruisingRangeAcOffKm(battery.cruisingRangeAcOffKm)
-           .withCruisingRangeAcOffMiles(battery.cruisingRangeAcOffMiles)
-           .withCruisingRangeAcOnKm(battery.cruisingRangeAcOnKm)
-           .withCruisingRangeAcOnMiles(battery.cruisingRangeAcOnMiles)
-           .withLastUpdatedDateTime(battery.dateTime)
-           .withTimeToFullL2(battery.timeToFullL2)
-           .withTimeToFullL2_6kw(battery.timeToFullL2_6kw)
-           .withTimeToFullTrickle(battery.timeToFullTrickle)
-           .build());
+    return saveAndPrependVin(BatteryInfoBuilder()
+            .withChargePercentage(((battery.batteryLevel * 100) / battery.batteryLevelCapacity).round())
+            .withConnectedStatus(battery.isConnected)
+            .withChargingStatus(battery.isCharging)
+            .withCapacity(battery.batteryLevelCapacity.toDouble())
+            .withCruisingRangeAcOffKm(battery.cruisingRangeAcOffKm)
+            .withCruisingRangeAcOffMiles(battery.cruisingRangeAcOffMiles)
+            .withCruisingRangeAcOnKm(battery.cruisingRangeAcOnKm)
+            .withCruisingRangeAcOnMiles(battery.cruisingRangeAcOnMiles)
+            .withLastUpdatedDateTime(battery.dateTime)
+            .withTimeToFullL2(battery.timeToFullL2)
+            .withTimeToFullL2_6kw(battery.timeToFullL2_6kw)
+            .withTimeToFullTrickle(battery.timeToFullTrickle)
+            .build());
   }
 
   @override
   Future<bool> startCharging() =>
     _vehicle.requestChargingStart();
+
+  @override
+  Future<Map<String, String>> fetchClimateStatus() =>
+    Future<Map<String, String>>.value(<String, String>{});
+
+  @override
+  Future<void> startClimate(int targetTemperatureCelsius) =>
+    _vehicle.requestClimateControlOn(DateTime.now().add(const Duration(seconds: 5)));
+
+  @override
+  Future<void> stopClimate() =>
+    _vehicle.requestClimateControlOff();
 }

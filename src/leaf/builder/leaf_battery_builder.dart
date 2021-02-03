@@ -1,5 +1,3 @@
-import 'package:dartnissanconnect/dartnissanconnect.dart';
-
 import 'leaf_builder_base.dart';
 
 class BatteryInfoBuilder extends BuilderBase {
@@ -37,18 +35,18 @@ class BatteryInfoBuilder extends BuilderBase {
     _withInfo('lastUpdatedDateTimeUtc', lastUpdatedDateTime.toUtc().toIso8601String());
 
   BatteryInfoBuilder withTimeToFullL2(Duration timeToFullL2) =>
-    _addIfNotZero('timeToFullL2InMinutes', timeToFullL2);
+    _withNonZeroInfo('timeToFullL2InMinutes', timeToFullL2);
 
   BatteryInfoBuilder withTimeToFullL2_6kw(Duration timeToFullL2_6kw) =>
-    _addIfNotZero('timeToFullL2_6kwInMinutes', timeToFullL2_6kw);
+    _withNonZeroInfo('timeToFullL2_6kwInMinutes', timeToFullL2_6kw);
 
   BatteryInfoBuilder withTimeToFullTrickle(Duration timeToFullTrickle) =>
-    _addIfNotZero('timeToFullTrickleInMinutes', timeToFullTrickle);
+    _withNonZeroInfo('timeToFullTrickleInMinutes', timeToFullTrickle);
 
-  BatteryInfoBuilder withChargingSpeed(ChargingSpeed chargingSpeed) =>
+  BatteryInfoBuilder withChargingSpeed(String chargingSpeed) =>
     _withInfo('chargingSpeed', chargingSpeed);
 
-  BatteryInfoBuilder _addIfNotZero(String infoName, Duration value) =>
+  BatteryInfoBuilder _withNonZeroInfo(String infoName, Duration value) =>
     value.inMinutes == 0 ? this : _withInfo(infoName, value.inMinutes);
 
   BatteryInfoBuilder _withInfo(String infoName, dynamic value) =>

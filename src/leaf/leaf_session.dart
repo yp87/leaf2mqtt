@@ -1,6 +1,3 @@
-import 'package:dartcarwings/dartcarwings.dart';
-
-import 'carwings_wrapper.dart';
 import 'leaf_vehicle.dart';
 import 'nissan_connect_na_wrapper.dart';
 import 'nissan_connect_wrapper.dart';
@@ -59,7 +56,7 @@ abstract class LeafSessionInternal extends LeafSession {
     for (final VehicleInternal lastKnownVehicle in _lastKnownVehicles) {
       final VehicleInternal matchingVehicle =
         vehicles.firstWhere((VehicleInternal vehicle) => vehicle.vin == lastKnownVehicle.vin, orElse: () => null);
-      matchingVehicle?.setLastKnownStatus(lastKnownVehicle);
+      matchingVehicle?.setLastKnownState(lastKnownVehicle);
     }
 
     _lastKnownVehicles = vehicles;

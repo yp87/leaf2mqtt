@@ -42,28 +42,45 @@ MQTT topics using the default `MQTT_BASE_TOPIC` (`leaf`):
 | Topic  | Type | Description |
 | ------ | ---- | ----------- |
 | leaf/{vin}/battery/percentage | Integer | The last reported battery charge of the leaf |
-|leaf/{vin}/battery/connected| Boolean | True if the leaf is reported as currently connected. False otherwise |
-|leaf/{vin}/battery/charging| Boolean | True if the leaf is reported as currently charging. False otherwise |
-|leaf/{vin}/battery/capacity| Double | The reported total capacity of the battery |
-|leaf/{vin}/battery/chargingSpeed| String | can be one of None, Slow, Normal or Fast  |
-|leaf/{vin}/battery/cruisingRangeAcOffKm | Integer | Range left with climate off in kilometers as estimated by the Leaf |
-|leaf/{vin}/battery/cruisingRangeAcOffMiles | Integer | Range left with climate off in miles as estimated by the Leaf |
-|leaf/{vin}/battery/cruisingRangeAcOnKm | Integer | Range left with climate on in kilometers as estimated by the Leaf |
-|leaf/{vin}/battery/cruisingRangeAcOnMiles | Integer | Range left with climate on in miles as estimated by the Leaf |
-|leaf/{vin}/battery/timeToFullTrickleInMinutes | Integer | The reported time in minutes to fully charge when trickling (~1kw) |
-|leaf/{vin}/battery/timeToFullL2InMinutes | Integer | The reported time in minutes to fully charge when charging in half speed L2 (~3kw) |
-|leaf/{vin}/battery/timeToFullL2_6kwInMinutes | Integer | The reported time in minutes to fully charge when charging in full speed L2 (~6kw) |
-|leaf/{vin}/battery/lastUpdatedDateTimeUtc | Iso8601 UTC | The datetime when the last battery values were updated |
-|leaf/{vin}/battery/lastReceivedDateTimeUtc | Iso8601 UTC | The datetime when leaf2mqtt received the last battery values |
+| leaf/{vin}/battery/connected| Boolean | True if the leaf is reported as currently connected. False otherwise |
+| leaf/{vin}/battery/charging| Boolean | True if the leaf is reported as currently charging. False otherwise |
+| leaf/{vin}/battery/capacity| Double | The reported total capacity of the battery |
+| leaf/{vin}/battery/chargingSpeed| String | can be one of None, Slow, Normal or Fast  |
+| leaf/{vin}/battery/cruisingRangeAcOffKm | Integer | Range left with climate off in kilometers as estimated by the Leaf |
+| leaf/{vin}/battery/cruisingRangeAcOffMiles | Integer | Range left with climate off in miles as estimated by the Leaf |
+| leaf/{vin}/battery/cruisingRangeAcOnKm | Integer | Range left with climate on in kilometers as estimated by the Leaf |
+| leaf/{vin}/battery/cruisingRangeAcOnMiles | Integer | Range left with climate on in miles as estimated by the Leaf |
+| leaf/{vin}/battery/timeToFullTrickleInMinutes | Integer | The reported time in minutes to fully charge when trickling (~1kw) |
+| leaf/{vin}/battery/timeToFullL2InMinutes | Integer | The reported time in minutes to fully charge when charging in half speed L2 (~3kw) |
+| leaf/{vin}/battery/timeToFullL2_6kwInMinutes | Integer | The reported time in minutes to fully charge when charging in full speed L2 (~6kw) |
+| leaf/{vin}/battery/lastUpdatedDateTimeUtc | Iso8601 UTC | The datetime when the last battery values were updated |
+| leaf/{vin}/battery/lastReceivedDateTimeUtc | Iso8601 UTC | The datetime when leaf2mqtt received the last battery values |
 
 #### Commands
 | Topic | Payload | Description |
 | ----- | ------- | ----------- |
 | leaf/{vin}/command/battery | update | Request an update for all battery status  |
-| leaf/{vin}/command/battery | charge | Request the Leaf to start charging  |
-    
+| leaf/{vin}/command/battery | startCharging | Request the Leaf to start charging  |
 
-:information_source: Note that the status and commands for the first vehicle are also supported on the same topic without the {vin}.
+### Climate
+#### Status
+| Topic  | Type | Description |
+| ------ | ---- | ----------- |
+| leaf/{vin}/climate/cabinTemperatureC | Double | The reported cabin temperature in Celsius |
+| leaf/{vin}/climate/cabinTemperatureF | Double | The reported cabin temperature in Fahrenheit |
+| leaf/{vin}/climate/runningStatus | Boolean | True if the Leaf is reporting the HVAC as running. False otherwise |
+| leaf/{vin}/climate/lastReceivedDateTimeUtc | Iso8601 UTC | The datetime when leaf2mqtt received the last climate values |
+
+#### Commands
+| Topic | Payload | Description |
+| ----- | ------- | ----------- |
+| leaf/{vin}/command/climate | update | Request an update for all climate status |
+| leaf/{vin}/command/climate | start | Request the Leaf to start climate control |
+| leaf/{vin}/command/climate | startC XY | Request the Leaf to start climate control at XY Celsius |
+| leaf/{vin}/command/climate | startF XY | Request the Leaf to start climate control at XY Fahrenheit |
+| leaf/{vin}/command/climate | stop | Request the Leaf to stop climate control |
+
+:information_source: The status and commands for the first Leaf in the account are also supported by using the same topic without the {vin}.
 
 :warning: Not all status and commands are supported for a given leaf type due to Carwings, NissanConnectNA or NissanConnect api limitations.
 

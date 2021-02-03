@@ -1,8 +1,8 @@
-import 'dart:io';
-
 import 'package:dartnissanconnect/dartnissanconnect.dart';
+import 'package:dartnissanconnect/src/nissanconnect_hvac.dart';
 
 import 'builder/leaf_battery_builder.dart';
+import 'builder/leaf_climate_builder.dart';
 import 'leaf_session.dart';
 import 'leaf_vehicle.dart';
 
@@ -36,7 +36,7 @@ class NissanConnectVehicleWrapper extends VehicleInternal {
     final int percentage =
       double.tryParse(battery.batteryPercentage.replaceFirst('%', ''))?.round();
 
-    return lastBatteryStatus = prependVin(BatteryInfoBuilder()
+    return saveAndPrependVin(BatteryInfoBuilder()
            .withChargePercentage(percentage ?? -1)
            .withConnectedStatus(battery.isConnected)
            .withChargingStatus(battery.isCharging)
@@ -48,11 +48,30 @@ class NissanConnectVehicleWrapper extends VehicleInternal {
            .withTimeToFullL2(battery.timeToFullNormal)
            .withTimeToFullL2_6kw(battery.timeToFullFast)
            .withTimeToFullTrickle(battery.timeToFullSlow)
-           .withChargingSpeed(battery.chargingSpeed)
+           .withChargingSpeed(battery.chargingSpeed.toString())
            .build());
   }
 
   @override
   Future<void> startCharging() =>
     _vehicle.requestChargingStart();
+
+  @override
+  Future<Map<String, String>> fetchClimateStatus() async {
+    await _vehicle.requestClimateControlStatusRefresh();
+    final NissanConnectHVAC hvac = await _vehicle.requestClimateControlStatus();
+
+    return saveAndPrependVin(ClimateInfoBuilder()
+            .withCabinTemperatureCelsius(hvac.cabinTemperature)
+            .withHvacRunningStatus(hvac.isRunning)
+            .build());
+  }
+
+  @override
+  Future<void> startClimate(int targetTemperatureCelsius) =>
+    _vehicle.requestClimateControlOn(DateTime.now().add(const Duration(seconds: 5)), targetTemperatureCelsius);
+
+  @override
+  Future<void> stopClimate() =>
+    _vehicle.requestClimateControlOff();
 }

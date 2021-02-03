@@ -1,6 +1,7 @@
 import 'package:dartcarwings/dartcarwings.dart';
 
 import 'builder/leaf_battery_builder.dart';
+import 'builder/leaf_climate_builder.dart';
 import 'leaf_session.dart';
 import 'leaf_vehicle.dart';
 
@@ -40,23 +41,42 @@ class CarwingsVehicleWrapper extends VehicleInternal {
   Future<Map<String, String>> fetchBatteryStatus() async {
     final CarwingsBattery battery = await _vehicle.requestBatteryStatusLatest();
 
-    return lastBatteryStatus = prependVin(BatteryInfoBuilder()
-           .withChargePercentage(((battery.batteryLevel * 100) / battery.batteryLevelCapacity).round())
-           .withConnectedStatus(battery.isConnected)
-           .withChargingStatus(battery.isCharging)
-           .withCapacity(battery.batteryLevelCapacity)
-           .withCruisingRangeAcOffKm(battery.cruisingRangeAcOffKm)
-           .withCruisingRangeAcOffMiles(battery.cruisingRangeAcOffMiles)
-           .withCruisingRangeAcOnKm(battery.cruisingRangeAcOnKm)
-           .withCruisingRangeAcOnMiles(battery.cruisingRangeAcOnMiles)
-           .withLastUpdatedDateTime(battery.dateTime)
-           .withTimeToFullL2(battery.timeToFullL2)
-           .withTimeToFullL2_6kw(battery.timeToFullL2_6kw)
-           .withTimeToFullTrickle(battery.timeToFullTrickle)
-           .build());
+    return saveAndPrependVin(BatteryInfoBuilder()
+            .withChargePercentage(((battery.batteryLevel * 100) / battery.batteryLevelCapacity).round())
+            .withConnectedStatus(battery.isConnected)
+            .withChargingStatus(battery.isCharging)
+            .withCapacity(battery.batteryLevelCapacity)
+            .withCruisingRangeAcOffKm(battery.cruisingRangeAcOffKm)
+            .withCruisingRangeAcOffMiles(battery.cruisingRangeAcOffMiles)
+            .withCruisingRangeAcOnKm(battery.cruisingRangeAcOnKm)
+            .withCruisingRangeAcOnMiles(battery.cruisingRangeAcOnMiles)
+            .withLastUpdatedDateTime(battery.dateTime)
+            .withTimeToFullL2(battery.timeToFullL2)
+            .withTimeToFullL2_6kw(battery.timeToFullL2_6kw)
+            .withTimeToFullTrickle(battery.timeToFullTrickle)
+            .build());
   }
 
   @override
   Future<void> startCharging() =>
     _vehicle.requestChargingStart(DateTime.now().add(const Duration(seconds: 5)));
+
+  @override
+  Future<Map<String, String>> fetchClimateStatus() async {
+    final CarwingsCabinTemperature cabinTemperature = await _vehicle.requestCabinTemperatureLatest();
+    final CarwingsHVAC hvac = await _vehicle.requestHVACStatus();
+
+    return saveAndPrependVin(ClimateInfoBuilder()
+            .withCabinTemperatureCelsius(cabinTemperature.temperature)
+            .withHvacRunningStatus(hvac.isRunning)
+            .build());
+  }
+
+  @override
+  Future<void> startClimate(int targetTemperatureCelsius) =>
+    _vehicle.requestClimateControlOn();
+
+  @override
+  Future<void> stopClimate() =>
+    _vehicle.requestClimateControlOff();
 }

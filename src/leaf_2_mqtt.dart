@@ -41,6 +41,7 @@ Future<void> main() async {
 
   final MqttClientWrapper mqttClient = MqttClientWrapper();
   mqttClient.onConnected = () => _onConnected(mqttClient, session);
+  mqttClient.connectWithRetry(envVars['MQTT_USERNAME'], envVars['MQTT_PASSWORD']);
 
   // Starting one loop per vehicle because each can have different interval depending on their state.
   await Future.wait(session.vehicles.map((Vehicle vehicle) => startUpdateLoop(session, mqttClient, vehicle)));
@@ -89,7 +90,7 @@ void subscribeToCommands(MqttClientWrapper mqttClient, Vehicle vehicle, LeafSess
         case 'update':
             fetchAndPublishBatteryStatus(mqttClient, vehicle);
           break;
-        case 'charge':
+        case 'startCharging':
             vehicle.startCharging().then(
               (_) => Future<void>.delayed(const Duration(seconds: 5)).then(
                 (_) => fetchAndPublishBatteryStatus(mqttClient, vehicle)));
@@ -97,18 +98,63 @@ void subscribeToCommands(MqttClientWrapper mqttClient, Vehicle vehicle, LeafSess
         default:
       }
     });
+
+  subscribe('command/climate', (String payload) {
+    switch (payload) {
+      case 'update':
+          fetchAndPublishClimateStatus(mqttClient, vehicle);
+        break;
+      case 'stop':
+          vehicle.stopClimate().then(
+            (_) => Future<void>.delayed(const Duration(seconds: 5)).then(
+              (_) => fetchAndPublishClimateStatus(mqttClient, vehicle)));
+        break;
+      default:
+        if (payload?.startsWith('start') ?? false) {
+          int targetTemperatureCelsius;
+
+          String targetTemperature = payload.replaceFirst('start', '').trim();
+          if (targetTemperature.startsWith('C')) {
+            targetTemperature = targetTemperature.replaceFirst('C', '').trim();
+            targetTemperatureCelsius = double.tryParse(targetTemperature)?.round();
+
+          } else if (targetTemperature.startsWith('F')) {
+            targetTemperature = targetTemperature.replaceFirst('F', '').trim();
+            final int targetTemperatureFahrenheit = double.tryParse(targetTemperature)?.round();
+
+            if (targetTemperatureFahrenheit != null) {
+              targetTemperatureCelsius = ((targetTemperatureFahrenheit - 32) * 5 / 9).round();
+            }
+          } else if (payload == 'start') {
+            targetTemperatureCelsius = 21;
+          }
+
+          if (targetTemperatureCelsius != null){
+            vehicle.startClimate(targetTemperatureCelsius).then(
+              (_) => Future<void>.delayed(const Duration(seconds: 5)).then(
+                (_) => fetchAndPublishClimateStatus(mqttClient, vehicle)));
+          }
+        }
+        break;
+    }
+  });
 }
 
 Future<void> fetchAndPublishBatteryStatus(MqttClientWrapper mqttClient, Vehicle vehicle) =>
-   vehicle.fetchBatteryStatus().then((_) => mqttClient.publishStates(vehicle.lastBatteryStatus));
+   vehicle.fetchBatteryStatus().then(mqttClient.publishStates);
+
+Future<void> fetchAndPublishClimateStatus(MqttClientWrapper mqttClient, Vehicle vehicle) =>
+   vehicle.fetchClimateStatus().then(mqttClient.publishStates);
 
 Future<void> fetchAndPublishAllStatus(MqttClientWrapper mqttClient, Vehicle vehicle) =>
-  Future.wait([
-    Future<void>(() => mqttClient.publishStates(vehicle.lastVehicleStatus)),
-    fetchAndPublishBatteryStatus(mqttClient, vehicle)
+  Future.wait(<Future<void>> [
+    Future<void>(() => mqttClient.publishStates(vehicle.getVehicleStatus())),
+    fetchAndPublishBatteryStatus(mqttClient, vehicle),
+    fetchAndPublishClimateStatus(mqttClient, vehicle)
   ]);
 
 void _onConnected(MqttClientWrapper mqttClient, LeafSession leafSession) {
+  mqttClient.subscribeToCommands();
   mqttClient.publishStates(leafSession.getAllLastKnownStatus());
 }
 

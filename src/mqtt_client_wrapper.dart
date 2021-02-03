@@ -12,14 +12,10 @@ class MqttClientWrapper {
 
     final String mqttHost = envVars['MQTT_HOST'] ?? '127.0.0.1';
     final int mqttPort = int.tryParse(envVars['MQTT_PORT'] ?? '1883') ?? 1883;
-    final String mqttUser = envVars['MQTT_USERNAME'];
-    final String mqttPassword = envVars['MQTT_PASSWORD'];
     _baseTopic = envVars['MQTT_BASE_TOPIC'] ?? 'leaf';
 
     _mqttClient = MqttServerClient.withPort(mqttHost, 'leaf2mqtt', mqttPort);
     _mqttClient.autoReconnect = true;
-    _mqttClient.onConnected = onConnected;
-    _connectWithRetry(mqttUser, mqttPassword);
   }
 
   MqttServerClient _mqttClient;
@@ -30,7 +26,12 @@ class MqttClientWrapper {
 
   ConnectCallback onConnected;
 
-  Future<void> _connectWithRetry(String mqttUser, String mqttPassword) async {
+  DisconnectCallback onDisconnected;
+
+  Future<void> connectWithRetry(String mqttUser, String mqttPassword) async {
+    _mqttClient.onConnected = onConnected;
+    _mqttClient.onDisconnected = onDisconnected;
+
     bool connected = false;
     while (!connected) {
       try {
@@ -41,14 +42,16 @@ class MqttClientWrapper {
         print(e);
       }
 
-      if(connected){
-        _mqttClient.subscribe('$_baseTopic/command/#', MqttQos.exactlyOnce);
-        _mqttClient.subscribe('$_baseTopic/+/command/#', MqttQos.exactlyOnce);
-        _mqttClient.updates.listen(_receiveData);
-      } else {
+      if(!connected){
         await Future<void>.delayed(const Duration(seconds: 5));
       }
     }
+  }
+
+  void subscribeToCommands() {
+    _mqttClient.subscribe('$_baseTopic/command/#', MqttQos.exactlyOnce);
+    _mqttClient.subscribe('$_baseTopic/+/command/#', MqttQos.exactlyOnce);
+    _mqttClient.updates.listen(_receiveData);
   }
 
   void subscribeTopic(String topic, PayloadReceivedhandler handler){
