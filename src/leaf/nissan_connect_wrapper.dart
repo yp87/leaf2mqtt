@@ -15,23 +15,29 @@ class NissanConnectSessionWrapper extends LeafSessionInternal {
   Future<void> login(String username, String password) async {
     await _session.login(username: username, password: password);
 
-    int vehicleNumber = 0;
     final List<VehicleInternal> vehicles = _session.vehicles.map((NissanConnectVehicle vehicle) =>
-      NissanConnectVehicleWrapper(vehicle, vehicleNumber++)).toList();
+      NissanConnectVehicleWrapper(vehicle)).toList();
 
     setVehicles(vehicles);
   }
 }
 
 class NissanConnectVehicleWrapper extends VehicleInternal {
-  NissanConnectVehicleWrapper(this._vehicle, int vehicleNumber) :
-    super(_vehicle.nickname.toString(), _vehicle.vin.toString(), vehicleNumber == 0);
+  NissanConnectVehicleWrapper(NissanConnectVehicle vehicle) :
+    _session = vehicle.session,
+    super(vehicle.nickname.toString(), vehicle.vin.toString());
 
-  final NissanConnectVehicle _vehicle;
+  final NissanConnectSession _session;
+
+  NissanConnectVehicle _getVehicle() =>
+    _session.vehicles.firstWhere((NissanConnectVehicle v) => v.vin == vin);
+
+  @override
+  bool isFirstVehicle() => _session.vehicle.vin == vin;
 
   @override
   Future<Map<String, String>> fetchBatteryStatus() async {
-    final NissanConnectBattery battery = await _vehicle.requestBatteryStatus();
+    final NissanConnectBattery battery = await _getVehicle().requestBatteryStatus();
 
     final int percentage =
       double.tryParse(battery.batteryPercentage.replaceFirst('%', ''))?.round();
@@ -54,12 +60,14 @@ class NissanConnectVehicleWrapper extends VehicleInternal {
 
   @override
   Future<void> startCharging() =>
-    _vehicle.requestChargingStart();
+    _getVehicle().requestChargingStart();
 
   @override
   Future<Map<String, String>> fetchClimateStatus() async {
-    await _vehicle.requestClimateControlStatusRefresh();
-    final NissanConnectHVAC hvac = await _vehicle.requestClimateControlStatus();
+    final NissanConnectVehicle vehicle = _getVehicle();
+
+    await vehicle.requestClimateControlStatusRefresh();
+    final NissanConnectHVAC hvac = await vehicle.requestClimateControlStatus();
 
     return saveAndPrependVin(ClimateInfoBuilder()
             .withCabinTemperatureCelsius(hvac.cabinTemperature)
@@ -69,9 +77,11 @@ class NissanConnectVehicleWrapper extends VehicleInternal {
 
   @override
   Future<void> startClimate(int targetTemperatureCelsius) =>
-    _vehicle.requestClimateControlOn(DateTime.now().add(const Duration(seconds: 5)), targetTemperatureCelsius);
+    _getVehicle().requestClimateControlOn(
+      DateTime.now().add(const Duration(seconds: 5)),
+      targetTemperatureCelsius);
 
   @override
   Future<void> stopClimate() =>
-    _vehicle.requestClimateControlOff();
+    _getVehicle().requestClimateControlOff();
 }

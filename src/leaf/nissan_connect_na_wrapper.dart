@@ -14,23 +14,29 @@ class NissanConnectNASessionWrapper extends LeafSessionInternal {
   Future<void> login(String username, String password) async {
     await _session.login(username: username, password: password, countryCode: _countryCode);
 
-    int vehicleNumber = 0;
     final List<VehicleInternal> vehicles = _session.vehicles.map((NissanConnectVehicle vehicle) =>
-      NissanConnectNAVehicleWrapper(vehicle, vehicleNumber++)).toList();
+      NissanConnectNAVehicleWrapper(vehicle)).toList();
 
     setVehicles(vehicles);
   }
 }
 
 class NissanConnectNAVehicleWrapper extends VehicleInternal {
-  NissanConnectNAVehicleWrapper(this._vehicle, int vehicleNumber) :
-    super(_vehicle.nickname.toString(), _vehicle.vin.toString(), vehicleNumber == 0);
+  NissanConnectNAVehicleWrapper(NissanConnectVehicle vehicle) :
+    _session = vehicle.session,
+    super(vehicle.nickname.toString(), vehicle.vin.toString());
 
-  final NissanConnectVehicle _vehicle;
+  final NissanConnectSession _session;
+
+  NissanConnectVehicle _getVehicle() =>
+    _session.vehicles.firstWhere((NissanConnectVehicle v) => v.vin == vin);
+
+  @override
+  bool isFirstVehicle() => _session.vehicle.vin == vin;
 
   @override
   Future<Map<String, String>> fetchBatteryStatus() async {
-    final NissanConnectBattery battery = await _vehicle.requestBatteryStatus();
+    final NissanConnectBattery battery = await _getVehicle().requestBatteryStatus();
 
     return saveAndPrependVin(BatteryInfoBuilder()
             .withChargePercentage(((battery.batteryLevel * 100) / battery.batteryLevelCapacity).round())
@@ -49,8 +55,8 @@ class NissanConnectNAVehicleWrapper extends VehicleInternal {
   }
 
   @override
-  Future<bool> startCharging() =>
-    _vehicle.requestChargingStart();
+  Future<void> startCharging() =>
+    _getVehicle().requestChargingStart();
 
   @override
   Future<Map<String, String>> fetchClimateStatus() =>
@@ -58,9 +64,9 @@ class NissanConnectNAVehicleWrapper extends VehicleInternal {
 
   @override
   Future<void> startClimate(int targetTemperatureCelsius) =>
-    _vehicle.requestClimateControlOn(DateTime.now().add(const Duration(seconds: 5)));
+    _getVehicle().requestClimateControlOn(DateTime.now().add(const Duration(seconds: 5)));
 
   @override
   Future<void> stopClimate() =>
-    _vehicle.requestClimateControlOff();
+    _getVehicle().requestClimateControlOff();
 }

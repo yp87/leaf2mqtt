@@ -30,14 +30,7 @@ Future<void> main() async {
 
   final LeafSession session = LeafSessionFactory.createLeafSession(leafType);
 
-  try {
-    await session.login(leafUser, leafPassword);
-  } catch (e, stacktrace) {
-    print('An error occured while logging in. Please make sure you have selected the right LEAF_TYPE, LEAF_USERNAME and LEAF_PASSWORD.');
-    print(e);
-    print(stacktrace);
-    exit(3);
-  }
+  await _login(session, leafUser, leafPassword);
 
   final MqttClientWrapper mqttClient = MqttClientWrapper();
   mqttClient.onConnected = () => _onConnected(mqttClient, session);
@@ -45,6 +38,21 @@ Future<void> main() async {
 
   // Starting one loop per vehicle because each can have different interval depending on their state.
   await Future.wait(session.vehicles.map((Vehicle vehicle) => startUpdateLoop(session, mqttClient, vehicle)));
+}
+
+Future<void> _login(LeafSession session, String leafUser, String leafPassword) async {
+  bool loggedIn = false;
+  while(!loggedIn) {
+    try {
+      await session.login(leafUser, leafPassword);
+      loggedIn = true;
+    } catch (e, stacktrace) {
+      print('An error occured while logging in. Please make sure you have selected the right LEAF_TYPE, LEAF_USERNAME and LEAF_PASSWORD.');
+      print(e);
+      print(stacktrace);
+      await Future<void>.delayed(const Duration(seconds: 5));
+    }
+  }
 }
 
 Future<void> startUpdateLoop(LeafSession session, MqttClientWrapper mqttClient, Vehicle vehicle) async {
@@ -91,9 +99,9 @@ void subscribeToCommands(MqttClientWrapper mqttClient, Vehicle vehicle, LeafSess
             fetchAndPublishBatteryStatus(mqttClient, vehicle);
           break;
         case 'startCharging':
-            vehicle.startCharging().then(
+            _executeWithRetry(() => vehicle.startCharging().then(
               (_) => Future<void>.delayed(const Duration(seconds: 5)).then(
-                (_) => fetchAndPublishBatteryStatus(mqttClient, vehicle)));
+                (_) => fetchAndPublishBatteryStatus(mqttClient, vehicle))));
           break;
         default:
       }
@@ -105,9 +113,9 @@ void subscribeToCommands(MqttClientWrapper mqttClient, Vehicle vehicle, LeafSess
           fetchAndPublishClimateStatus(mqttClient, vehicle);
         break;
       case 'stop':
-          vehicle.stopClimate().then(
+          _executeWithRetry(() => vehicle.stopClimate().then(
             (_) => Future<void>.delayed(const Duration(seconds: 5)).then(
-              (_) => fetchAndPublishClimateStatus(mqttClient, vehicle)));
+              (_) => fetchAndPublishClimateStatus(mqttClient, vehicle))));
         break;
       default:
         if (payload?.startsWith('start') ?? false) {
@@ -130,9 +138,9 @@ void subscribeToCommands(MqttClientWrapper mqttClient, Vehicle vehicle, LeafSess
           }
 
           if (targetTemperatureCelsius != null){
-            vehicle.startClimate(targetTemperatureCelsius).then(
+            _executeWithRetry(() => vehicle.startClimate(targetTemperatureCelsius).then(
               (_) => Future<void>.delayed(const Duration(seconds: 5)).then(
-                (_) => fetchAndPublishClimateStatus(mqttClient, vehicle)));
+                (_) => fetchAndPublishClimateStatus(mqttClient, vehicle))));
           }
         }
         break;
@@ -141,10 +149,10 @@ void subscribeToCommands(MqttClientWrapper mqttClient, Vehicle vehicle, LeafSess
 }
 
 Future<void> fetchAndPublishBatteryStatus(MqttClientWrapper mqttClient, Vehicle vehicle) =>
-   vehicle.fetchBatteryStatus().then(mqttClient.publishStates);
+   _executeWithRetry(() => vehicle.fetchBatteryStatus().then(mqttClient.publishStates));
 
 Future<void> fetchAndPublishClimateStatus(MqttClientWrapper mqttClient, Vehicle vehicle) =>
-   vehicle.fetchClimateStatus().then(mqttClient.publishStates);
+   _executeWithRetry(() => vehicle.fetchClimateStatus().then(mqttClient.publishStates));
 
 Future<void> fetchAndPublishAllStatus(MqttClientWrapper mqttClient, Vehicle vehicle) =>
   Future.wait(<Future<void>> [
@@ -163,3 +171,21 @@ extension on MqttClientWrapper {
     states.forEach(publishMessage);
   }
 }
+
+typedef Executable = Future<void> Function();
+Future<void> _executeWithRetry(Executable executable) async {
+  try {
+    await _execute(executable);
+  } catch (_) {
+    try {
+      // retry 1 time..
+      await Future<void>.delayed(const Duration(seconds: 5));
+      await _execute(executable);
+    } catch (e, stacktrace) {
+      print(e);
+      print(stacktrace);
+    }
+  }
+}
+
+Future<void> _execute(Executable executable) => executable();

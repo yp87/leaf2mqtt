@@ -1,17 +1,17 @@
 abstract class VehicleInternal extends Vehicle {
-  VehicleInternal(String nickname, String vin, this._isFirstVehicle) : super(vin) {
+  VehicleInternal(String nickname, String vin) : super(vin) {
     _lastKnownStatus['nickname'] = nickname;
     _lastKnownStatus['vin'] = vin;
   }
 
-  final bool _isFirstVehicle;
+  bool isFirstVehicle();
 
   Map<String, String> saveAndPrependVin(Map<String, String> newStatus) {
     _lastKnownStatus.addAll(newStatus);
     return _prependVin(newStatus);
   }
 
-  void setLastKnownState(Vehicle lastknownVehicle) =>
+  void setLastKnownStatus(Vehicle lastknownVehicle) =>
     _lastKnownStatus.addAll(lastknownVehicle._lastKnownStatus);
 
   @override
@@ -23,7 +23,7 @@ abstract class VehicleInternal extends Vehicle {
 
     // We also keep all status without vin for the first vehicle
     // since most people only have one vehicle.
-    if (_isFirstVehicle) {
+    if (isFirstVehicle()) {
       statusWithVin.addAll(status);
     }
 

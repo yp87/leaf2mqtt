@@ -17,9 +17,8 @@ class CarwingsWrapper extends LeafSessionInternal {
     await _session.login(username: username, password: password, region: _region,
                          blowfishEncryptCallback: blowFishEncrypt);
 
-    int vehicleNumber = 0;
     final List<VehicleInternal> vehicles = _session.vehicles.map((CarwingsVehicle vehicle) =>
-      CarwingsVehicleWrapper(vehicle, vehicleNumber++)).toList();
+      CarwingsVehicleWrapper(vehicle)).toList();
 
     setVehicles(vehicles);
   }
@@ -32,14 +31,21 @@ class CarwingsWrapper extends LeafSessionInternal {
 }
 
 class CarwingsVehicleWrapper extends VehicleInternal {
-  CarwingsVehicleWrapper(this._vehicle, int vehicleNumber) :
-    super(_vehicle.nickname.toString(), _vehicle.vin.toString(), vehicleNumber == 0);
+  CarwingsVehicleWrapper(CarwingsVehicle vehicle) :
+    _session = vehicle.session,
+    super(vehicle.nickname.toString(), vehicle.vin.toString());
 
-  final CarwingsVehicle _vehicle;
+  final CarwingsSession _session;
+
+  CarwingsVehicle _getVehicle() =>
+    _session.vehicles.firstWhere((CarwingsVehicle v) => v.vin == vin);
+
+  @override
+  bool isFirstVehicle() => _session.vehicle.vin == vin;
 
   @override
   Future<Map<String, String>> fetchBatteryStatus() async {
-    final CarwingsBattery battery = await _vehicle.requestBatteryStatusLatest();
+    final CarwingsBattery battery = await _getVehicle().requestBatteryStatusLatest();
 
     return saveAndPrependVin(BatteryInfoBuilder()
             .withChargePercentage(((battery.batteryLevel * 100) / battery.batteryLevelCapacity).round())
@@ -59,12 +65,12 @@ class CarwingsVehicleWrapper extends VehicleInternal {
 
   @override
   Future<void> startCharging() =>
-    _vehicle.requestChargingStart(DateTime.now().add(const Duration(seconds: 5)));
+    _getVehicle().requestChargingStart(DateTime.now().add(const Duration(seconds: 5)));
 
   @override
   Future<Map<String, String>> fetchClimateStatus() async {
-    final CarwingsCabinTemperature cabinTemperature = await _vehicle.requestCabinTemperatureLatest();
-    final CarwingsHVAC hvac = await _vehicle.requestHVACStatus();
+    final CarwingsCabinTemperature cabinTemperature = await _getVehicle().requestCabinTemperatureLatest();
+    final CarwingsHVAC hvac = await _getVehicle().requestHVACStatus();
 
     return saveAndPrependVin(ClimateInfoBuilder()
             .withCabinTemperatureCelsius(cabinTemperature.temperature)
@@ -74,9 +80,9 @@ class CarwingsVehicleWrapper extends VehicleInternal {
 
   @override
   Future<void> startClimate(int targetTemperatureCelsius) =>
-    _vehicle.requestClimateControlOn();
+    _getVehicle().requestClimateControlOn();
 
   @override
   Future<void> stopClimate() =>
-    _vehicle.requestClimateControlOff();
+    _getVehicle().requestClimateControlOff();
 }
