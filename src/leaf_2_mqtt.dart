@@ -5,16 +5,9 @@ import 'leaf/leaf_session.dart';
 import 'leaf/leaf_vehicle.dart';
 import 'mqtt_client_wrapper.dart';
 
+LeafSession _session;
 Future<void> main() async {
   final Map<String, String> envVars = Platform.environment;
-
-  final String leafUser = envVars['LEAF_USERNAME'];
-  final String leafPassword = envVars['LEAF_PASSWORD'];
-
-  if ((leafUser?.isEmpty ?? true) || (leafPassword?.isEmpty ?? true)) {
-    print('LEAF_USER and LEAF_PASSWORD environment variables must be set.');
-    exit(1);
-  }
 
   final String leafTypeStr = envVars['LEAF_TYPE'] ?? 'oldUSA';
   final LeafType leafType =
@@ -28,25 +21,43 @@ Future<void> main() async {
     exit(2);
   }
 
-  final LeafSession session = LeafSessionFactory.createLeafSession(leafType);
+  _session = LeafSessionFactory.createLeafSession(leafType);
 
-  await _login(session, leafUser, leafPassword);
+  await _login();
 
   final MqttClientWrapper mqttClient = MqttClientWrapper();
-  mqttClient.onConnected = () => _onConnected(mqttClient, session);
+  mqttClient.onConnected = () => _onConnected(mqttClient);
   mqttClient.connectWithRetry(envVars['MQTT_USERNAME'], envVars['MQTT_PASSWORD']);
 
   // Starting one loop per vehicle because each can have different interval depending on their state.
-  await Future.wait(session.vehicles.map((Vehicle vehicle) => startUpdateLoop(session, mqttClient, vehicle)));
+  await Future.wait(_session.vehicles.map((Vehicle vehicle) => startUpdateLoop(mqttClient, vehicle)));
 }
 
-Future<void> _login(LeafSession session, String leafUser, String leafPassword) async {
+bool _loggingIn = false;
+Future<void> _login() async {
+  if (_loggingIn) {
+    return;
+  }
+
+  _loggingIn = true;
+
+  final Map<String, String> envVars = Platform.environment;
+
+  final String leafUser = envVars['LEAF_USERNAME'];
+  final String leafPassword = envVars['LEAF_PASSWORD'];
+
+  if ((leafUser?.isEmpty ?? true) || (leafPassword?.isEmpty ?? true)) {
+    print('LEAF_USER and LEAF_PASSWORD environment variables must be set.');
+    exit(1);
+  }
+
   bool loggedIn = false;
   while(!loggedIn) {
     try {
-      await session.login(leafUser, leafPassword);
+      await _session.login(leafUser, leafPassword);
       print('Login successful');
       loggedIn = true;
+      _loggingIn = false;
     } catch (e, stacktrace) {
       print('An error occured while logging in. Please make sure you have selected the right LEAF_TYPE, LEAF_USERNAME and LEAF_PASSWORD.');
       print(e);
@@ -56,12 +67,12 @@ Future<void> _login(LeafSession session, String leafUser, String leafPassword) a
   }
 }
 
-Future<void> startUpdateLoop(LeafSession session, MqttClientWrapper mqttClient, Vehicle vehicle) async {
+Future<void> startUpdateLoop(MqttClientWrapper mqttClient, Vehicle vehicle) async {
   final Map<String, String> envVars = Platform.environment;
   final int updateIntervalMinutes = int.tryParse(envVars['UPDATE_INTERVAL_MINUTES']  ?? '60') ?? 60;
   final int chargingUpdateIntervalMinutes = int.tryParse(envVars['CHARGING_UPDATE_INTERVAL_MINUTES'] ?? '15') ?? 15;
 
-  subscribeToCommands(mqttClient, vehicle, session);
+  subscribeToCommands(mqttClient, vehicle);
 
   while (true) {
     await fetchAndPublishAllStatus(mqttClient, vehicle);
@@ -75,11 +86,11 @@ Future<void> startUpdateLoop(LeafSession session, MqttClientWrapper mqttClient, 
   }
 }
 
-void subscribeToCommands(MqttClientWrapper mqttClient, Vehicle vehicle, LeafSession session) {
+void subscribeToCommands(MqttClientWrapper mqttClient, Vehicle vehicle) {
   void subscribe(String topic, void Function(String payload) handler) {
     mqttClient.subscribeTopic('${vehicle.vin}/$topic', handler);
 
-    if (session.vehicles[0].vin == vehicle.vin) {
+    if (_session.vehicles[0].vin == vehicle.vin) {
       // first vehicle also can send command without the vin
       mqttClient.subscribeTopic(topic, handler);
     }
@@ -162,9 +173,9 @@ Future<void> fetchAndPublishAllStatus(MqttClientWrapper mqttClient, Vehicle vehi
     fetchAndPublishClimateStatus(mqttClient, vehicle)
   ]);
 
-void _onConnected(MqttClientWrapper mqttClient, LeafSession leafSession) {
+void _onConnected(MqttClientWrapper mqttClient) {
   mqttClient.subscribeToCommandTopic();
-  mqttClient.publishStates(leafSession.getAllLastKnownStatus());
+  mqttClient.publishStates(_session.getAllLastKnownStatus());
 }
 
 extension on MqttClientWrapper {
@@ -185,6 +196,8 @@ Future<void> _executeWithRetry(Executable executable) async {
     } catch (e, stacktrace) {
       print(e);
       print(stacktrace);
+      print('force a login');
+      _login();
     }
   }
 }
