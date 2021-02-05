@@ -38,7 +38,7 @@ class CarwingsVehicleWrapper extends VehicleInternal {
   final CarwingsSession _session;
 
   CarwingsVehicle _getVehicle() =>
-    _session.vehicles.firstWhere((CarwingsVehicle v) => v.vin == vin);
+    _session.vehicles.firstWhere((CarwingsVehicle v) => v.vin.toString() == vin);
 
   @override
   bool isFirstVehicle() => _session.vehicle.vin == vin;

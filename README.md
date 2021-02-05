@@ -1,6 +1,6 @@
 # leaf2mqtt
 
-**This is a work in progress.**
+**Unstable. This is a work in progress.**
 
 > :warning: If you're not using the Leaf frequently, stop the container or drastically reduce the update frequency, or you could well end up with a flat 12V battery.
 

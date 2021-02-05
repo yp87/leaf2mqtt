@@ -28,8 +28,14 @@ class NissanConnectNAVehicleWrapper extends VehicleInternal {
 
   final NissanConnectSession _session;
 
-  NissanConnectVehicle _getVehicle() =>
-    _session.vehicles.firstWhere((NissanConnectVehicle v) => v.vin == vin);
+  NissanConnectVehicle _getVehicle() {
+    try {
+      _session.vehicles.firstWhere((NissanConnectVehicle v) => v.vin.toString() == vin);
+    } catch (_) {
+      print('Could not find matching vehicle: $vin ${_session?.vehicles?.length} ${_session?.vehicles?.first?.vin}');
+      rethrow;
+    }
+  }
 
   @override
   bool isFirstVehicle() => _session.vehicle.vin == vin;
