@@ -10,10 +10,11 @@ class CarwingsWrapper extends LeafSessionInternal {
 
   final CarwingsRegion _region;
 
-  final CarwingsSession _session = CarwingsSession();
+  CarwingsSession _session;
 
   @override
   Future<void> login(String username, String password) async {
+    _session = CarwingsSession();
     await _session.login(username: username, password: password, region: _region,
                          blowfishEncryptCallback: blowFishEncrypt);
 

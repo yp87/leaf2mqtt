@@ -7,11 +7,12 @@ import 'leaf_vehicle.dart';
 class NissanConnectNASessionWrapper extends LeafSessionInternal {
   NissanConnectNASessionWrapper(this._countryCode);
 
-  final NissanConnectSession _session = NissanConnectSession();
+  NissanConnectSession _session;
   final String _countryCode;
 
   @override
   Future<void> login(String username, String password) async {
+    _session = NissanConnectSession();
     await _session.login(username: username, password: password, countryCode: _countryCode);
 
     final List<VehicleInternal> vehicles = _session.vehicles.map((NissanConnectVehicle vehicle) =>
@@ -30,7 +31,7 @@ class NissanConnectNAVehicleWrapper extends VehicleInternal {
 
   NissanConnectVehicle _getVehicle() {
     try {
-      _session.vehicles.firstWhere((NissanConnectVehicle v) => v.vin.toString() == vin);
+      return _session.vehicles.firstWhere((NissanConnectVehicle v) => v.vin.toString() == vin);
     } catch (_) {
       print('Could not find matching vehicle: $vin ${_session?.vehicles?.length} ${_session?.vehicles?.first?.vin}');
       rethrow;
