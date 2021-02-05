@@ -45,6 +45,7 @@ Future<void> _login(LeafSession session, String leafUser, String leafPassword) a
   while(!loggedIn) {
     try {
       await session.login(leafUser, leafPassword);
+      print('Login successful');
       loggedIn = true;
     } catch (e, stacktrace) {
       print('An error occured while logging in. Please make sure you have selected the right LEAF_TYPE, LEAF_USERNAME and LEAF_PASSWORD.');
