@@ -61,7 +61,7 @@ abstract class LeafSessionInternal extends LeafSession {
   List<Vehicle> get vehicles => _lastKnownVehicles;
 
   void setVehicles(List<VehicleInternal> newVehicles) {
-        // keep the last states
+    // keep the last states
     for (final VehicleInternal lastKnownVehicle in _lastKnownVehicles) {
       final VehicleInternal matchingVehicle =
         newVehicles.firstWhere((VehicleInternal vehicle) => vehicle.vin == lastKnownVehicle.vin, orElse: () => null);
