@@ -1,24 +1,28 @@
 import 'package:dartnissanconnectna/dartnissanconnectna.dart';
+import 'package:logging/logging.dart';
 
 import 'builder/leaf_battery_builder.dart';
 import 'leaf_session.dart';
 import 'leaf_vehicle.dart';
 
+final Logger _log = Logger('NissanConnectNASessionWrapper');
+
 class NissanConnectNASessionWrapper extends LeafSessionInternal {
-  NissanConnectNASessionWrapper(this._countryCode);
+  NissanConnectNASessionWrapper(this._countryCode, String username, String password)
+    : super(username, password);
 
   NissanConnectSession _session;
   final String _countryCode;
 
   @override
-  Future<void> login(String username, String password) async {
-    _session = NissanConnectSession();
+  Future<void> login() async {
+    _session = NissanConnectSession(debug: _log.level <= Level.FINER);
     await _session.login(username: username, password: password, countryCode: _countryCode);
 
-    final List<VehicleInternal> vehicles = _session.vehicles.map((NissanConnectVehicle vehicle) =>
+    final List<VehicleInternal> newVehicles = _session.vehicles.map((NissanConnectVehicle vehicle) =>
       NissanConnectNAVehicleWrapper(vehicle)).toList();
 
-    setVehicles(vehicles);
+    setVehicles(newVehicles);
   }
 }
 
@@ -30,8 +34,8 @@ class NissanConnectNAVehicleWrapper extends VehicleInternal {
   final NissanConnectSession _session;
 
   NissanConnectVehicle _getVehicle() =>
-      _session.vehicles.firstWhere((NissanConnectVehicle v) => v.vin.toString() == vin,
-                orElse: () => throw Exception('Could not find matching vehicle: $vin ${_session.vehicles.length} ${_session.vehicles.first?.vin}'));
+    _session.vehicles.firstWhere((NissanConnectVehicle v) => v.vin.toString() == vin,
+      orElse: () => throw Exception('Could not find matching vehicle: $vin number of vehicles: ${_session.vehicles.length}'));
 
   @override
   bool isFirstVehicle() => _session.vehicle.vin == vin;

@@ -34,8 +34,8 @@ packages:
     description:
       path: "."
       ref: HEAD
-      resolved-ref: "1a9d04c31bb76f95b8f98fd1ae407271caf141d5"
-      url: "https://gitlab.com/tobiaswkjeldsen/dartcarwings"
+      resolved-ref: "00be7faa59eb508969a81d97a63ffcfe421c54b0"
+      url: "https://github.com/Tobiaswk/dartcarwings"
     source: git
     version: "0.0.1"
   dartnissanconnect:
@@ -43,8 +43,8 @@ packages:
     description:
       path: "."
       ref: HEAD
-      resolved-ref: ea1817c3c2fdbfe7198577f0dd80ebaa8cc6c870
-      url: "https://gitlab.com/tobiaswkjeldsen/dartnissanconnect"
+      resolved-ref: "3a976523cbff98d011901ec4facd9d6c7686adb6"
+      url: "https://github.com/Tobiaswk/dartnissanconnect"
     source: git
     version: "0.0.1"
   dartnissanconnectna:
@@ -53,7 +53,7 @@ packages:
       path: "."
       ref: HEAD
       resolved-ref: "4cb16f0f39762677d6a81c37e40ec0bd539a54f9"
-      url: "https://gitlab.com/tobiaswkjeldsen/dartnissanconnectna"
+      url: "https://github.com/Tobiaswk/dartnissanconnectna"
     source: git
     version: "0.0.1"
   event_bus:
@@ -84,6 +84,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "0.15.8"
+  logging:
+    dependency: "direct main"
+    description:
+      name: logging
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "0.11.4"
   meta:
     dependency: transitive
     description:
@@ -141,4 +148,4 @@ packages:
     source: hosted
     version: "1.2.0"
 sdks:
-  dart: ">=2.6.0 <3.0.0"
+  dart: ">=2.10.0 <3.0.0"

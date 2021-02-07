@@ -1,6 +1,10 @@
+import 'package:logging/logging.dart';
+
 import 'leaf_vehicle.dart';
 import 'nissan_connect_na_wrapper.dart';
 import 'nissan_connect_wrapper.dart';
+
+final Logger _log = Logger('LeafSession');
 
 enum LeafType {
   newerThanMay2019,
@@ -12,18 +16,18 @@ enum LeafType {
 }
 
 class LeafSessionFactory {
-  static LeafSession createLeafSession(LeafType leafType) {
+  static LeafSession createLeafSession(LeafType leafType, String username, String password) {
     switch (leafType) {
       case LeafType.newerThanMay2019:
-        return NissanConnectSessionWrapper();
+        return NissanConnectSessionWrapper(username, password);
         break;
 
       case LeafType.olderCanada:
-        return NissanConnectNASessionWrapper('CA');
+        return NissanConnectNASessionWrapper('CA', username, password);
         break;
 
       case LeafType.olderUsa:
-        return NissanConnectNASessionWrapper('US');
+        return NissanConnectNASessionWrapper('US', username, password);
         break;
 
       default:
@@ -46,39 +50,85 @@ class LeafSessionFactory {
 }
 
 abstract class LeafSessionInternal extends LeafSession {
+  LeafSessionInternal(this.username, this.password);
+
+  final String username;
+  final String password;
+
   List<VehicleInternal> _lastKnownVehicles = <VehicleInternal>[];
 
   @override
   List<Vehicle> get vehicles => _lastKnownVehicles;
 
-  void setVehicles(List<VehicleInternal> vehicles) {
-    // keep the last states
+  void setVehicles(List<VehicleInternal> newVehicles) {
+        // keep the last states
     for (final VehicleInternal lastKnownVehicle in _lastKnownVehicles) {
       final VehicleInternal matchingVehicle =
-        vehicles.firstWhere((VehicleInternal vehicle) => vehicle.vin == lastKnownVehicle.vin, orElse: () => null);
+        newVehicles.firstWhere((VehicleInternal vehicle) => vehicle.vin == lastKnownVehicle.vin, orElse: () => null);
       matchingVehicle?.setLastKnownStatus(lastKnownVehicle);
     }
 
-    _lastKnownVehicles = vehicles;
+    _lastKnownVehicles = newVehicles;
   }
 
   @override
-  Map<String, String> getAllLastKnownStatus() {
-    final Map<String, String> allLastknownStatus = <String, String>{};
-    final List<VehicleInternal> vehicles = _lastKnownVehicles;
-
-    for (final VehicleInternal vehicle in vehicles) {
-      allLastknownStatus.addAll(vehicle.getLastKnownStatus());
-    }
-
-    return allLastknownStatus;
-  }
+  Map<String, String> getAllLastKnownStatus() =>
+      _lastKnownVehicles.fold(<String, String>{},
+      (Map<String, String> allLastKnownStatus, VehicleInternal vehicle) {
+        allLastKnownStatus.addAll(vehicle.getLastKnownStatus());
+        return allLastKnownStatus;
+      } );
 }
 
+typedef ExecutableVehicleActionHandler<T> = Future<T> Function(Vehicle vehicle);
+typedef SyncExecutableVehicleActionHandler<T> = T Function(Vehicle vehicle);
 abstract class LeafSession {
+
   List<Vehicle> get vehicles;
 
-  Future<void> login(String userName, String password);
+   Vehicle _getVehicle(String vin) =>
+    vehicles.firstWhere((Vehicle vehicle) => vehicle.vin == vin,
+                        orElse: () => throw Exception('Vehicle $vin not found.'));
+
+  Future<void> login();
+
   Map<String, String> getAllLastKnownStatus();
+
+  T executeSync<T>(SyncExecutableVehicleActionHandler<T> executable, String vin) {
+      try {
+        return executable(_getVehicle(vin));
+      } catch (e, stackTrace) {
+        _logException(e, stackTrace);
+      }
+
+      return null;
+  }
+
+  Future<T> executeWithRetry<T>(ExecutableVehicleActionHandler<T> executable, String vin) async {
+    int attempts = 0;
+    while (attempts < 2) {
+      try {
+        return await _execute(executable, vin);
+      } catch (e, stackTrace) {
+        _logException(e, stackTrace);
+      }
+
+      _log.finer('Force a login before retrying failed execution.');
+      await login();
+      ++attempts;
+    }
+
+    return null;
+  }
+
+  Future<T> _execute<T>(ExecutableVehicleActionHandler<T> executable, String vin) {
+    _log.finest('Executing');
+    return executable(_getVehicle(vin));
+  }
+
+  void _logException(dynamic e, StackTrace stackTrace) {
+    _log.fine(e);
+    _log.finer(stackTrace);
+  }
 }
 

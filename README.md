@@ -1,6 +1,6 @@
 # leaf2mqtt
 
-**Unstable. This is a work in progress.**
+**This is a work in progress.**
 
 > :warning: If you're not using the Leaf frequently, stop the container or drastically reduce the update frequency, or you could well end up with a flat 12V battery.
 
@@ -12,11 +12,28 @@ Should work with multiple Leafs, but it is untested. Please open an issue with f
 
 More documentation will follow.
 
-Building the image:
+- Table of Content
+  * [Setup](#setup)
+    + [Building the image:](#building-the-image-)
+    + [Running the image:](#running-the-image-)
+  * [Status and Commands](#status-and-commands)
+    + [General](#general)
+      - [Status](#status)
+      - [Commands](#commands)
+    + [Battery](#battery)
+      - [Status](#status-1)
+      - [Commands](#commands-1)
+    + [Climate](#climate)
+      - [Status](#status-2)
+      - [Commands](#commands-2)
+  * [Credits](#credits)
+
+## Setup
+### Building the image:
 
     docker build -tag leaf2mqtt .
 
-Running the image:
+### Running the image:
 
     docker run -e LEAF_USERNAME=[Your NissanConnect username] -e LEAF_PASSWORD="[Your NissanConnect password]" -e LEAF_TYPE=[newerThanMay2019, olderCanada or olderUSA] -e MQTT_USERNAME="[Optional. Your mqtt username]" -e MQTT_PASSWORD="[Optional. Your mqtt password]" -e MQTT_HOST=[IP or hostname of your mqtt broker] -e MQTT_BASE_TOPIC=[Optional. Default = leaf] --name leaf2mqtt leaf2mqtt
 

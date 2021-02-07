@@ -2,10 +2,12 @@ name: leaf2mqtt
 version: 0.0.1
 dependencies:
   dartnissanconnectna:
-    git: https://gitlab.com/tobiaswkjeldsen/dartnissanconnectna
+    git: https://github.com/Tobiaswk/dartnissanconnectna
   dartnissanconnect:
-    git: https://gitlab.com/tobiaswkjeldsen/dartnissanconnect
+    git: https://github.com/Tobiaswk/dartnissanconnect
   dartcarwings:
-    git: https://gitlab.com/tobiaswkjeldsen/dartcarwings
+    git: https://github.com/Tobiaswk/dartcarwings
 
   mqtt_client: ^7.0.0
+
+  logging: ^0.11.4

@@ -4,8 +4,6 @@ abstract class VehicleInternal extends Vehicle {
     _lastKnownStatus['vin'] = vin;
   }
 
-  bool isFirstVehicle();
-
   Map<String, String> saveAndPrependVin(Map<String, String> newStatus) {
     _lastKnownStatus.addAll(newStatus);
     return _prependVin(newStatus);
@@ -37,6 +35,8 @@ abstract class Vehicle {
   Vehicle(this.vin);
 
   final String vin;
+
+  bool isFirstVehicle();
 
   bool get isCharging =>
     _findValueOfKeyIn(_lastKnownStatus, 'charging') == 'true';

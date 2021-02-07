@@ -7,19 +7,20 @@ import 'leaf_session.dart';
 import 'leaf_vehicle.dart';
 
 class NissanConnectSessionWrapper extends LeafSessionInternal {
-  NissanConnectSessionWrapper();
+  NissanConnectSessionWrapper(String username, String password)
+    : super(username, password);
 
   NissanConnectSession _session;
 
   @override
-  Future<void> login(String username, String password) async {
+  Future<void> login() async {
     _session = NissanConnectSession();
     await _session.login(username: username, password: password);
 
-    final List<VehicleInternal> vehicles = _session.vehicles.map((NissanConnectVehicle vehicle) =>
+    final List<VehicleInternal> newVvehicles = _session.vehicles.map((NissanConnectVehicle vehicle) =>
       NissanConnectVehicleWrapper(vehicle)).toList();
 
-    setVehicles(vehicles);
+    setVehicles(newVvehicles);
   }
 }
 
@@ -31,7 +32,8 @@ class NissanConnectVehicleWrapper extends VehicleInternal {
   final NissanConnectSession _session;
 
   NissanConnectVehicle _getVehicle() =>
-    _session.vehicles.firstWhere((NissanConnectVehicle v) => v.vin.toString() == vin);
+    _session.vehicles.firstWhere((NissanConnectVehicle v) => v.vin.toString() == vin,
+      orElse: () => throw Exception('Could not find matching vehicle: $vin number of vehicles: ${_session.vehicles.length}'));
 
   @override
   bool isFirstVehicle() => _session.vehicle.vin == vin;
