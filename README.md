@@ -26,6 +26,9 @@ More documentation will follow.
     + [Climate](#climate)
       - [Status](#status-2)
       - [Commands](#commands-2)
+  * [Home Assistant integration](#home-assistant-integration)
+    + [Sensor examples](#sensor-examples)
+    + [Recommended Battery Status Update Script](#recommended-battery-status-update-script)
   * [Credits](#credits)
 
 ## Setup
@@ -35,7 +38,7 @@ More documentation will follow.
 
 ### Running the image:
 
-    docker run -e LEAF_USERNAME=[Your NissanConnect username] -e LEAF_PASSWORD="[Your NissanConnect password]" -e LEAF_TYPE=[newerThanMay2019, olderCanada or olderUSA] -e MQTT_USERNAME="[Optional. Your mqtt username]" -e MQTT_PASSWORD="[Optional. Your mqtt password]" -e MQTT_HOST=[IP or hostname of your mqtt broker] -e MQTT_BASE_TOPIC=[Optional. Default = leaf] --name leaf2mqtt leaf2mqtt
+    docker run -e LEAF_USERNAME=[Your NissanConnect username] -e LEAF_PASSWORD="[Your NissanConnect password]" -e LEAF_TYPE=[newerThanMay2019, olderCanada or olderUSA] -e MQTT_USERNAME="[Optional. Your mqtt username]" -e MQTT_PASSWORD="[Optional. Your mqtt password]" -e MQTT_HOST=[IP or hostname of your mqtt broker] -e MQTT_BASE_TOPIC=[Optional. Default = leaf] -e UPDATE_INTERVAL_MINUTES=[Optional. Default = 60] -e CHARGING_UPDATE_INTERVAL_MINUTES=[Optional. Default = 15] --name leaf2mqtt leaf2mqtt
 
 MQTT topics using the default `MQTT_BASE_TOPIC` (`leaf`):    
 
@@ -100,6 +103,70 @@ MQTT topics using the default `MQTT_BASE_TOPIC` (`leaf`):
 :information_source: The status and commands for the first Leaf in the account are also supported by using the same topic without the {vin}.
 
 :warning: Not all status and commands are supported for a given leaf type due to Carwings, NissanConnectNA or NissanConnect api limitations.
+
+## Home Assistant integration
+### Sensor examples
+    sensors:
+      - platform: mqtt
+        name: leaf_battery_level
+        # Since VIN is not specified, it will represent the state from the first vehicle in the account.
+        state_topic: "leaf/battery/percentage"
+        unit_of_measurement: "%"
+        device_class: battery
+
+      - platform: mqtt
+        name: leaf_battery_last_updated
+        # Since VIN is not specified, it will represent the state from the first Leaf in the account.
+        state_topic: "leaf/battery/lastUpdatedDateTimeUtc"
+        device_class: timestamp
+
+      - platform: mqtt
+        name: leaf_battery_last_received
+        # You can specify the vin if you prefer or if you have more than one Leaf.
+        state_topic: "leaf/XXXXXSOMEXVINXXXXX/battery/lastReceivedDateTimeUtc"
+        device_class: timestamp
+
+### Recommended Battery Status Update Script
+In Home Assistant, calling a script like this `- service: script.some_script_name` within another script or automation will actually stop the execution of the calling script until `script.some_script_name` terminates, unlike using `script.turn_on`. Knowing this, you can ensure you have the latest state for your leaf before continuing an automation using a script like this:
+
+    update_leaf_battery:
+      # Using queued will ensure you do not update twice at the same time and will prevent
+      # subsequent invocations from asking an update right away because of the while's conditions.
+      # All the callers will also wait for the result.
+      mode: queued
+      sequence:
+        - repeat:
+            while:
+              # Used with the sensors in the section above, this condition will
+              # ensure we continue until the states are really updated.
+              # It will also prevent subsequent calls from unnecessarily requesting
+              # an update before the current state is 10 minutes old.
+              - >
+                {{ as_timestamp(now()) -
+                  as_timestamp(states('sensor.leaf_battery_last_updated')) > 600 }}
+
+              # We also stop the loop after 4 tries since Nissan servers can send the same
+              # old data many times in a row. I think this happens when the state did not really changed
+              # or the Leaf is unreachable. 
+              - "{{ repeat.index <= 4 }}"
+
+            sequence:
+              # We publish the update command for the car. 
+              # You can also ommit the VIN to target the first Leaf in the account.
+              # You can also request update for every state for one Leaf by removing the /battery section
+              - service: mqtt.publish
+                data:
+                  topic: "leaf/XXXXXSOMEXVINXXXXX/command/battery"
+                  payload: "update"
+              # We now wait until we actually have received a response or if we timed out.
+              # This does not mean that the received data is the latest. This is why
+              # we check sensor.leaf_battery_last_updated in the while condition.
+              - wait_for_trigger:
+                  - platform: state
+                    entity_id: sensor.leaf_battery_last_received
+                timeout: 600
+        # Let's have a cool down to give time to Home Assistant to update all the states.
+        - delay: "00:00:10"
 
 ## Credits
 - Forked from [Troon/leaf2mqtt](https://github.com/Troon/leaf2mqtt). Thank you for the inspiration!
