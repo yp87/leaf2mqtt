@@ -10,8 +10,6 @@ You must have a working MQTT broker on your LAN.
 
 Should work with multiple Leafs, but it is untested. Please open an issue with feedback if possible.
 
-More documentation will follow.
-
 - Table of Content
   * [Setup](#setup)
     + [Building the image:](#building-the-image-)
@@ -104,7 +102,7 @@ MQTT topics using the default `MQTT_BASE_TOPIC` (`leaf`):
 
 :warning: Not all status and commands are supported for a given leaf type due to Carwings, NissanConnectNA or NissanConnect api limitations.
 
-## Home Assistant integration
+## Home Assistant Integration
 ### Sensor examples
     sensors:
       - platform: mqtt
