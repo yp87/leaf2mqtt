@@ -12,8 +12,8 @@ Should work with multiple Leafs, but it is untested. Please open an issue with f
 
 - Table of Content
   * [Setup](#setup)
-    + [Building the image:](#building-the-image-)
-    + [Running the image:](#running-the-image-)
+    + [Building the image](#building-the-image-)
+    + [Running the image](#running-the-image-)
   * [Status and Commands](#status-and-commands)
     + [General](#general)
       - [Status](#status)
@@ -35,10 +35,24 @@ Should work with multiple Leafs, but it is untested. Please open an issue with f
     docker build -tag leaf2mqtt .
 
 ### Running the image:
+| Parameter | Optional | Description |
+|-----------|----------|-------------|
+| LEAF_USERNAME | No | Your NissanConnect username ||
+| LEAF_PASSWORD | No | Your NissanConnect password |
+| LEAF_TYPE | No | newerThanMay2019, olderCanada or olderUSA |
+| MQTT_USERNAME | Yes | Your mqtt username |
+| MQTT_PASSWORD | Yes | Your mqtt password |
+| MQTT_HOST | No | IP or hostname of your mqtt broker |
+| MQTT_BASE_TOPIC | Yes | The root MQTT topic for leaf2mqtt. Default is "leaf" |
+| UPDATE_INTERVAL_MINUTES | Yes | Time between automatic status refresh. Default is 60 |
+| CHARGING_UPDATE_INTERVAL_MINUTES* | Yes | Time between automatic status refresh when charging. Default is 60 |
+| LOG_LEVEL | Yes | The log verbosity used by leaf2mqtt. Default is "Warning" |
 
-    docker run -e LEAF_USERNAME=[Your NissanConnect username] -e LEAF_PASSWORD="[Your NissanConnect password]" -e LEAF_TYPE=[newerThanMay2019, olderCanada or olderUSA] -e MQTT_USERNAME="[Optional. Your mqtt username]" -e MQTT_PASSWORD="[Optional. Your mqtt password]" -e MQTT_HOST=[IP or hostname of your mqtt broker] -e MQTT_BASE_TOPIC=[Optional. Default = leaf] -e UPDATE_INTERVAL_MINUTES=[Optional. Default = 60] -e CHARGING_UPDATE_INTERVAL_MINUTES=[Optional. Default = 15] --name leaf2mqtt leaf2mqtt
+Example:
 
-:information_source: The `CHARGING_UPDATE_INTERVAL_MINUTES` value will only be used after the ongoing `UPDATE_INTERVAL_MINUTES` is elapsed and the Leaf is charging.
+    docker run --restart always -e LEAF_USERNAME="myusername@somewhere.com" -e LEAF_PASSWORD="Some P4ssword!" -e LEAF_TYPE="newerThanMay2019" -e MQTT_HOST=127.0.0.1 -e UPDATE_INTERVAL_MINUTES=1440 --name leaf2mqtt leaf2mqtt
+
+:information_source:* The `CHARGING_UPDATE_INTERVAL_MINUTES` value will only be used after the ongoing `UPDATE_INTERVAL_MINUTES` is elapsed and the Leaf is charging.
 
 MQTT topics using the default `MQTT_BASE_TOPIC` (`leaf`):    
 
