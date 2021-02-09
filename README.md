@@ -54,9 +54,8 @@ Example:
 
 :information_source:* The `CHARGING_UPDATE_INTERVAL_MINUTES` value will only be used after the ongoing `UPDATE_INTERVAL_MINUTES` is elapsed and the Leaf is charging.
 
-MQTT topics using the default `MQTT_BASE_TOPIC` (`leaf`):    
-
 ## Status and Commands
+In these examples, the `MQTT_BASE_TOPIC` is set to the default (`leaf`). 
 
 ### General
 #### Status
