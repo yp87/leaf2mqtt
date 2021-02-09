@@ -113,8 +113,13 @@ abstract class LeafSession {
         _logException(e, stackTrace);
       }
 
-      _log.finer('Force a login before retrying failed execution.');
-      await login();
+      try {
+        _log.finer('Force a login before retrying failed execution.');
+        await login();
+      } catch(e, stackTrace) {
+        _logException(e, stackTrace);
+      }
+
       ++attempts;
     }
 
