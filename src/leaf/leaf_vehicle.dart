@@ -57,11 +57,11 @@ abstract class Vehicle {
     };
 
   Future<Map<String, String>> fetchBatteryStatus();
-  Future<void> startCharging();
+  Future<bool> startCharging();
 
   Future<Map<String, String>> fetchClimateStatus();
-  Future<void> startClimate(int targetTemperatureCelsius);
-  Future<void> stopClimate();
+  Future<bool> startClimate(int targetTemperatureCelsius);
+  Future<bool> stopClimate();
 }
 
 

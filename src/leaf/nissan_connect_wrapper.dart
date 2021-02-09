@@ -62,7 +62,7 @@ class NissanConnectVehicleWrapper extends VehicleInternal {
   }
 
   @override
-  Future<void> startCharging() =>
+  Future<bool> startCharging() =>
     _getVehicle().requestChargingStart();
 
   @override
@@ -79,12 +79,12 @@ class NissanConnectVehicleWrapper extends VehicleInternal {
   }
 
   @override
-  Future<void> startClimate(int targetTemperatureCelsius) =>
+  Future<bool> startClimate(int targetTemperatureCelsius) =>
     _getVehicle().requestClimateControlOn(
       DateTime.now().add(const Duration(seconds: 5)),
       targetTemperatureCelsius);
 
   @override
-  Future<void> stopClimate() =>
+  Future<bool> stopClimate() =>
     _getVehicle().requestClimateControlOff();
 }

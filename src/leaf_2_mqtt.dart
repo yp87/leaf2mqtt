@@ -29,7 +29,7 @@ Future<void> main() async {
     print('${record.level.name}: ${record.time}: ${record.loggerName}: ${record.message}');
   });
 
-  _log.severe('V0.08');
+  _log.severe('V0.09');
 
   final String leafUser = envVars['LEAF_USERNAME'];
   final String leafPassword = envVars['LEAF_PASSWORD'];
@@ -140,7 +140,7 @@ void subscribeToCommands(MqttClientWrapper mqttClient, String vin) {
             fetchAndPublishBatteryStatus(mqttClient, vin);
           break;
         case 'startCharging':
-            _session.executeWithRetry((Vehicle vehicle) => vehicle.startCharging(), vin).then(
+            _session.executeCommandWithRetry((Vehicle vehicle) => vehicle.startCharging(), vin).then(
               (_) => Future<void>.delayed(const Duration(seconds: 5)).then(
                 (_) => fetchAndPublishBatteryStatus(mqttClient, vin)));
           break;
@@ -154,7 +154,7 @@ void subscribeToCommands(MqttClientWrapper mqttClient, String vin) {
           fetchAndPublishClimateStatus(mqttClient, vin);
         break;
       case 'stop':
-          _session.executeWithRetry((Vehicle vehicle) => vehicle.stopClimate(), vin).then(
+          _session.executeCommandWithRetry((Vehicle vehicle) => vehicle.stopClimate(), vin).then(
             (_) => Future<void>.delayed(const Duration(seconds: 5)).then(
               (_) => fetchAndPublishClimateStatus(mqttClient, vin)));
         break;
@@ -179,7 +179,7 @@ void subscribeToCommands(MqttClientWrapper mqttClient, String vin) {
           }
 
           if (targetTemperatureCelsius != null){
-            _session.executeWithRetry((Vehicle vehicle) =>
+            _session.executeCommandWithRetry((Vehicle vehicle) =>
               vehicle.startClimate(targetTemperatureCelsius), vin).then(
                 (_) => Future<void>.delayed(const Duration(seconds: 5)).then(
                   (_) => fetchAndPublishClimateStatus(mqttClient, vin)));

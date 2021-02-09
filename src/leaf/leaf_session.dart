@@ -104,19 +104,29 @@ abstract class LeafSession {
       return null;
   }
 
+  Future<void> executeCommandWithRetry(ExecutableVehicleActionHandler<bool> executable, String vin) async {
+    await executeWithRetry((Vehicle vehicle) async {
+      if (!await executable(vehicle)) {
+        throw Exception('Command returned false.');
+      }
+    }, vin);
+  }
+
   Future<T> executeWithRetry<T>(ExecutableVehicleActionHandler<T> executable, String vin) async {
     int attempts = 0;
     while (attempts < 2) {
-      try {
-        return await _execute(executable, vin);
-      } catch (e, stackTrace) {
-        _logException(e, stackTrace);
+      if (attempts > 0) {
+        try {
+          _log.finer('Force a login before retrying failed execution.');
+          await login();
+        } catch(e, stackTrace) {
+          _logException(e, stackTrace);
+        }
       }
 
       try {
-        _log.finer('Force a login before retrying failed execution.');
-        await login();
-      } catch(e, stackTrace) {
+        return await _execute(executable, vin);
+      } catch (e, stackTrace) {
         _logException(e, stackTrace);
       }
 
