@@ -40,9 +40,10 @@ Should work with multiple Leafs, but it is untested. Please open an issue with f
 | LEAF_USERNAME | No | Your NissanConnect username ||
 | LEAF_PASSWORD | No | Your NissanConnect password |
 | LEAF_TYPE | No | newerThanMay2019, olderCanada or olderUSA |
+| MQTT_HOST | No | IP or hostname of your mqtt broker. Localhost or 127.0.0.1 will not work when using Docker, use real host LAN ip |
+| MQTT_PORT | Yes | Port of your mqtt broker. Default is 1883  |
 | MQTT_USERNAME | Yes | Your mqtt username |
 | MQTT_PASSWORD | Yes | Your mqtt password |
-| MQTT_HOST | No | IP or hostname of your mqtt broker |
 | MQTT_BASE_TOPIC | Yes | The root MQTT topic for leaf2mqtt. Default is "leaf" |
 | UPDATE_INTERVAL_MINUTES | Yes | Time between automatic status refresh. Default is 60 |
 | CHARGING_UPDATE_INTERVAL_MINUTES* | Yes | Time between automatic status refresh when charging. Default is 60 |
