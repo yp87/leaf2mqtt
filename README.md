@@ -50,7 +50,7 @@ Should work with multiple Leafs, but it is untested. Please open an issue with f
 
 Example:
 
-    docker run --restart always -e LEAF_USERNAME="myusername@somewhere.com" -e LEAF_PASSWORD="Some P4ssword!" -e LEAF_TYPE="newerThanMay2019" -e MQTT_HOST=127.0.0.1 -e UPDATE_INTERVAL_MINUTES=1440 --name leaf2mqtt leaf2mqtt
+    docker run --restart always -e LEAF_USERNAME="myusername@somewhere.com" -e LEAF_PASSWORD="Some P4ssword!" -e LEAF_TYPE="newerThanMay2019" -e MQTT_HOST=192.168.1.111 -e UPDATE_INTERVAL_MINUTES=1440 --name leaf2mqtt leaf2mqtt
 
 :information_source:* The `CHARGING_UPDATE_INTERVAL_MINUTES` value will only be used after the ongoing `UPDATE_INTERVAL_MINUTES` is elapsed and the Leaf is charging.
 
