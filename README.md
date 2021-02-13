@@ -1,10 +1,7 @@
 # leaf2mqtt
-
-**This is a work in progress.**
-
 > :warning: If you're not using the Leaf frequently, stop the container or drastically reduce the update frequency, or you could well end up with a flat 12V battery.
 
-This works for my Canadian made in 2018 LEAF 40kWh car. Please open an issue if it also works for your different model and/or region, I will then update this list.
+This works for my Canadian made in 2018 LEAF 40kWh. It was also reported to be working on a newer than May 2019 Leaf.
 
 You must have a working MQTT broker on your LAN.
 
@@ -118,7 +115,7 @@ In these examples, the `MQTT_BASE_TOPIC` is set to the default (`leaf`).
 | leaf/{vin}/command/climate | stop | Request the Leaf to stop climate control |
 
 ### Stats
-`{TimeRange}` must be `daily` or `monthly`
+`{TimeRange}` must be `daily` or `monthly`.
 
 #### Status
 | Topic  | Type | Description |
