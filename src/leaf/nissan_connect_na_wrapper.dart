@@ -2,6 +2,7 @@ import 'package:dartnissanconnectna/dartnissanconnectna.dart';
 import 'package:logging/logging.dart';
 
 import 'builder/leaf_battery_builder.dart';
+import 'builder/leaf_stats_builder.dart';
 import 'leaf_session.dart';
 import 'leaf_vehicle.dart';
 
@@ -39,6 +40,28 @@ class NissanConnectNAVehicleWrapper extends VehicleInternal {
 
   @override
   bool isFirstVehicle() => _session.vehicle.vin == vin;
+
+  @override
+  Future<Map<String, String>> fetchDailyStatistics(DateTime targetDate) async =>
+    fetchStatistics(TimeRange.Daily, await _getVehicle().requestDailyStatistics(targetDate));
+
+  @override
+  Future<Map<String, String>> fetchMonthlyStatistics(DateTime targetDate) async =>
+    fetchStatistics(TimeRange.Monthly, await _getVehicle().requestMonthlyStatistics(targetDate));
+
+  Map<String, String> fetchStatistics(TimeRange targetTimeRange, NissanConnectStats stats) =>
+    saveAndPrependVin(StatsInfoBuilder(targetTimeRange)
+      .withTargetDate(stats.date)
+      .withtravelTime(stats.travelTime)
+      .withTravelDistanceMiles(stats.travelDistanceMiles)
+      .withTravelDistanceKilometers(stats.travelDistanceKilometers)
+      .withMilesPerKwh(stats.milesPerKWh)
+      .withKilometersPerKwh(stats.kilometersPerKWh)
+      .withKwhUsed(stats.kWhUsed)
+      .withKwhPerMiles(stats.kWhPerMiles)
+      .withKwhPerKilometers(stats.kWhPerKilometers)
+      .withCo2ReductionKg(stats.co2ReductionKg)
+      .build());
 
   @override
   Future<Map<String, String>> fetchBatteryStatus() async {

@@ -56,6 +56,9 @@ abstract class Vehicle {
       'vin': _lastKnownStatus['vin']
     };
 
+  Future<Map<String, String>> fetchDailyStatistics(DateTime targetDate);
+  Future<Map<String, String>> fetchMonthlyStatistics(DateTime targetDate);
+
   Future<Map<String, String>> fetchBatteryStatus();
   Future<bool> startCharging();
 

@@ -29,7 +29,7 @@ Future<void> main() async {
     print('${record.level.name}: ${record.time}: ${record.loggerName}: ${record.message}');
   });
 
-  _log.severe('V0.09');
+  _log.severe('V0.10');
 
   final String leafUser = envVars['LEAF_USERNAME'];
   final String leafPassword = envVars['LEAF_PASSWORD'];
@@ -188,6 +188,34 @@ void subscribeToCommands(MqttClientWrapper mqttClient, String vin) {
         break;
     }
   });
+
+  subscribe('command/stats/daily', (String payload) {
+    if (payload.startsWith('update')) {
+      final String targetDatePart = payload.replaceAll('update', '').trim();
+      final DateTime targetDate = DateTime.tryParse(targetDatePart.toUpperCase()) ?? DateTime.now();
+      fetchAndPublishDailyStats(mqttClient, vin, targetDate);
+    }
+  });
+
+  subscribe('command/stats/monthly', (String payload) {
+    if (payload.startsWith('update')) {
+      final String targetDatePart = payload.replaceAll('update', '').trim();
+      final DateTime targetDate = DateTime.tryParse(targetDatePart) ?? DateTime.now();
+      fetchAndPublishMonthlyStats(mqttClient, vin, targetDate);
+    }
+  });
+}
+
+Future<void> fetchAndPublishDailyStats(MqttClientWrapper mqttClient, String vin, DateTime targetDay) {
+  _log.finer('fetchAndPublishDailyStats for $vin');
+  return _session.executeWithRetry((Vehicle vehicle) =>
+           vehicle.fetchDailyStatistics(targetDay), vin).then(mqttClient.publishStates);
+}
+
+Future<void> fetchAndPublishMonthlyStats(MqttClientWrapper mqttClient, String vin, DateTime targetMonth) {
+  _log.finer('fetchAndPublishMonthlyStats for $vin');
+  return _session.executeWithRetry((Vehicle vehicle) =>
+           vehicle.fetchMonthlyStatistics(targetMonth), vin).then(mqttClient.publishStates);
 }
 
 Future<void> fetchAndPublishBatteryStatus(MqttClientWrapper mqttClient, String vin) {

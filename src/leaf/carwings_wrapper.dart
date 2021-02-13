@@ -2,6 +2,7 @@ import 'package:dartcarwings/dartcarwings.dart';
 
 import 'builder/leaf_battery_builder.dart';
 import 'builder/leaf_climate_builder.dart';
+import 'builder/leaf_stats_builder.dart';
 import 'leaf_session.dart';
 import 'leaf_vehicle.dart';
 
@@ -45,6 +46,21 @@ class CarwingsVehicleWrapper extends VehicleInternal {
 
   @override
   bool isFirstVehicle() => _session.vehicle.vin == vin;
+
+  @override
+  Future<Map<String, String>> fetchDailyStatistics(DateTime targetDate) =>
+    Future<Map<String, String>>.value(<String, String>{});
+
+  @override
+  Future<Map<String, String>> fetchMonthlyStatistics(DateTime targetDate) async {
+    final CarwingsStatsMonthly stats = await _getVehicle().requestStatisticsMonthly(targetDate);
+
+    return saveAndPrependVin(StatsInfoBuilder(TimeRange.Monthly)
+      .withTargetDate(stats.dateTime)
+      .withTripsNumber(int.tryParse(stats.totalNumberOfTrips))
+      .withCo2ReductionKg(stats.totalCO2Reduction)
+      .build());
+  }
 
   @override
   Future<Map<String, String>> fetchBatteryStatus() async {

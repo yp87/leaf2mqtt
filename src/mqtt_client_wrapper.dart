@@ -100,7 +100,8 @@ class MqttClientWrapper {
       message.payload.writeTo(byteBuffer);
       final String payloadWithTopic = MqttPublishPayload.bytesToStringAsString(byteBuffer.buffer);
       final String payload =
-        payloadWithTopic.substring(payloadWithTopic.indexOf(message.topic) + message.topic.length);
+        payloadWithTopic.substring(payloadWithTopic.indexOf(message.topic) + message.topic.length)
+        .toLowerCase();
 
       _log.finer('Received data: ${message.topic} $payload');
       final List<PayloadReceivedhandler> handlers =

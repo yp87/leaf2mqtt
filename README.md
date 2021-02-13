@@ -24,6 +24,9 @@ Should work with multiple Leafs, but it is untested. Please open an issue with f
     + [Climate](#climate)
       - [Status](#status-2)
       - [Commands](#commands-2)
+    + [Stats](#stats)
+      - [Status](#status-3)
+      - [Commands](#commands-3)
   * [Home Assistant integration](#home-assistant-integration)
     + [Sensor examples](#sensor-examples)
     + [Recommended Battery Status Update Script](#recommended-battery-status-update-script)
@@ -113,6 +116,31 @@ In these examples, the `MQTT_BASE_TOPIC` is set to the default (`leaf`).
 | leaf/{vin}/command/climate | startC XY | Request the Leaf to start climate control at XY Celsius |
 | leaf/{vin}/command/climate | startF XY | Request the Leaf to start climate control at XY Fahrenheit |
 | leaf/{vin}/command/climate | stop | Request the Leaf to stop climate control |
+
+### Stats
+`{TimeRange}` must be `daily` or `monthly`
+
+#### Status
+| Topic  | Type | Description |
+| ------ | ---- | ----------- |
+| leaf/{vin}/stats/{TimeRange}/targetDate | Iso8601 | The reported target date of the stats |
+| leaf/{vin}/stats/{TimeRange}/travelTimeHours | double | The reported time traveled in hours during specified time range |
+| leaf/{vin}/stats/{TimeRange}/travelDistanceMiles | double | The reported miles traveled during specified time range |
+| leaf/{vin}/stats/{TimeRange}/travelDistanceKilometers | double | The reported kilometers traveled during specified time range |
+| leaf/{vin}/stats/{TimeRange}/milesPerKwh | double | The reported miles per kWh during specified time range |
+| leaf/{vin}/stats/{TimeRange}/kilometersPerKwh | double | The reported kilometers per kWh during specified time range |
+| leaf/{vin}/stats/{TimeRange}/kwhUsed | double | The reported kWh consumption during specified time range |
+| leaf/{vin}/stats/{TimeRange}/kwhPerMiles | double | The reported kWh consumption per miles during specified time range |
+| leaf/{vin}/stats/{TimeRange}/kwhPerKilometers | double | The reported kWh consumption per km during specified time range |
+| leaf/{vin}/stats/{TimeRange}/co2ReductionKg | double | The reported number of co2 in Kg saved during specified time range |
+| leaf/{vin}/stats/{TimeRange}/tripsNumber | int | The reported number of trips during specified time range |
+| leaf/{vin}/stats/{TimeRange}/kwhGained | Double | The reported total regen in kWh during specified time range |
+| leaf/{vin}/stats/{TimeRange}/lastReceivedDateTimeUtc | Iso8601 UTC | The datetime when leaf2mqtt received the last climate values |
+
+#### Commands
+| Topic | Payload | Description |
+| ----- | ------- | ----------- |
+| leaf/{vin}/command/stats/{TimeRange} | update YYYY-MM-DD HH:MM:SS | Request an update for daily or monthly stats. Date must repect Iso8601 |
 
 :information_source: The status and commands for the first Leaf in the account are also supported by using the same topic without the {vin}.
 
