@@ -34,7 +34,7 @@ packages:
     description:
       path: "."
       ref: HEAD
-      resolved-ref: "00be7faa59eb508969a81d97a63ffcfe421c54b0"
+      resolved-ref: "081f7ae44b89a61d0a598c3bf24b26b1589233f4"
       url: "https://github.com/Tobiaswk/dartcarwings"
     source: git
     version: "0.0.1"
@@ -43,7 +43,7 @@ packages:
     description:
       path: "."
       ref: HEAD
-      resolved-ref: "3a976523cbff98d011901ec4facd9d6c7686adb6"
+      resolved-ref: "19773955c45fc5b2c89436759fcd9823d0cdd423"
       url: "https://github.com/Tobiaswk/dartnissanconnect"
     source: git
     version: "0.0.1"
@@ -52,7 +52,7 @@ packages:
     description:
       path: "."
       ref: HEAD
-      resolved-ref: "4cb16f0f39762677d6a81c37e40ec0bd539a54f9"
+      resolved-ref: "745af966ebca49a762f820748283008f916d0fed"
       url: "https://github.com/Tobiaswk/dartnissanconnectna"
     source: git
     version: "0.0.1"
@@ -148,4 +148,4 @@ packages:
     source: hosted
     version: "1.2.0"
 sdks:
-  dart: ">=2.10.0 <3.0.0"
+  dart: ">=2.7.0 <3.0.0"
