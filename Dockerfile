@@ -1,10 +1,19 @@
-FROM google/dart
+FROM dart AS build
+
+RUN apt-get update && \
+    apt-get install -y git
 
 WORKDIR /app
 
-ADD pubspec.* /app/
-RUN pub get
-ADD . /app
-RUN pub get --offline
+COPY pubspec.* ./
+RUN dart pub get
 
-ENTRYPOINT ["/usr/bin/dart", "src/leaf_2_mqtt.dart"]
+COPY . .
+RUN dart pub get --offline
+RUN dart compile exe src/leaf_2_mqtt.dart -o src/leaf_2_mqtt
+
+FROM scratch
+COPY --from=build /runtime/ /
+COPY --from=build /app/src/leaf_2_mqtt /app/bin/
+
+CMD ["/app/bin/leaf_2_mqtt"]
