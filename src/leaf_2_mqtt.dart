@@ -139,7 +139,7 @@ void subscribeToCommands(MqttClientWrapper mqttClient, String vin) {
         case 'update':
             fetchAndPublishBatteryStatus(mqttClient, vin);
           break;
-        case 'startCharging':
+        case 'startcharging':
             _session.executeCommandWithRetry((Vehicle vehicle) => vehicle.startCharging(), vin).then(
               (_) => Future<void>.delayed(const Duration(seconds: 5)).then(
                 (_) => fetchAndPublishBatteryStatus(mqttClient, vin)));
