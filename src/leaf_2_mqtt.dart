@@ -163,12 +163,12 @@ void subscribeToCommands(MqttClientWrapper mqttClient, String vin) {
           int targetTemperatureCelsius;
 
           String targetTemperature = payload.replaceFirst('start', '').trim();
-          if (targetTemperature.startsWith('C')) {
-            targetTemperature = targetTemperature.replaceFirst('C', '').trim();
+          if (targetTemperature.startsWith('c')) {
+            targetTemperature = targetTemperature.replaceFirst('c', '').trim();
             targetTemperatureCelsius = double.tryParse(targetTemperature)?.round();
 
-          } else if (targetTemperature.startsWith('F')) {
-            targetTemperature = targetTemperature.replaceFirst('F', '').trim();
+          } else if (targetTemperature.startsWith('f')) {
+            targetTemperature = targetTemperature.replaceFirst('f', '').trim();
             final int targetTemperatureFahrenheit = double.tryParse(targetTemperature)?.round();
 
             if (targetTemperatureFahrenheit != null) {
