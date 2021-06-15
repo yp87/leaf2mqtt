@@ -139,7 +139,7 @@ void subscribeToCommands(MqttClientWrapper mqttClient, String vin) {
         case 'update':
             fetchAndPublishBatteryStatus(mqttClient, vin);
           break;
-        case 'startCharging':
+        case 'startcharging':
             _session.executeCommandWithRetry((Vehicle vehicle) => vehicle.startCharging(), vin).then(
               (_) => Future<void>.delayed(const Duration(seconds: 5)).then(
                 (_) => fetchAndPublishBatteryStatus(mqttClient, vin)));
@@ -163,12 +163,12 @@ void subscribeToCommands(MqttClientWrapper mqttClient, String vin) {
           int targetTemperatureCelsius;
 
           String targetTemperature = payload.replaceFirst('start', '').trim();
-          if (targetTemperature.startsWith('C')) {
-            targetTemperature = targetTemperature.replaceFirst('C', '').trim();
+          if (targetTemperature.startsWith('c')) {
+            targetTemperature = targetTemperature.replaceFirst('c', '').trim();
             targetTemperatureCelsius = double.tryParse(targetTemperature)?.round();
 
-          } else if (targetTemperature.startsWith('F')) {
-            targetTemperature = targetTemperature.replaceFirst('F', '').trim();
+          } else if (targetTemperature.startsWith('f')) {
+            targetTemperature = targetTemperature.replaceFirst('f', '').trim();
             final int targetTemperatureFahrenheit = double.tryParse(targetTemperature)?.round();
 
             if (targetTemperatureFahrenheit != null) {
