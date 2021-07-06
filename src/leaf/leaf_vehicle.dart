@@ -10,11 +10,10 @@ abstract class VehicleInternal extends Vehicle {
   }
 
   void setLastKnownStatus(Vehicle lastknownVehicle) =>
-    _lastKnownStatus.addAll(lastknownVehicle._lastKnownStatus);
+      _lastKnownStatus.addAll(lastknownVehicle._lastKnownStatus);
 
   @override
-  Map<String, String> getLastKnownStatus() =>
-    _prependVin(_lastKnownStatus);
+  Map<String, String> getLastKnownStatus() => _prependVin(_lastKnownStatus);
 
   Map<String, String> _prependVin(Map<String, String> status) {
     final Map<String, String> statusWithVin = <String, String>{};
@@ -25,7 +24,8 @@ abstract class VehicleInternal extends Vehicle {
       statusWithVin.addAll(status);
     }
 
-    status.forEach((String key, String value) => statusWithVin['$vin/$key'] = value);
+    status.forEach(
+        (String key, String value) => statusWithVin['$vin/$key'] = value);
 
     return statusWithVin;
   }
@@ -39,22 +39,23 @@ abstract class Vehicle {
   bool isFirstVehicle();
 
   bool get isCharging =>
-    _findValueOfKeyIn(_lastKnownStatus, 'charging') == 'true';
+      _findValueOfKeyIn(_lastKnownStatus, 'charging') == 'true';
 
   String _findValueOfKeyIn(Map<String, String> status, String key) {
-    return status.entries.firstWhere(
-             (MapEntry<String, String> status) =>
-               status.key.endsWith(key), orElse: () => null)?.value;
+    return status.entries
+        .firstWhere(
+            (MapEntry<String, String> status) => status.key.endsWith(key),
+            orElse: () => null)
+        ?.value;
   }
 
   final Map<String, String> _lastKnownStatus = <String, String>{};
   Map<String, String> getLastKnownStatus();
 
-  Map<String, String> getVehicleStatus() =>
-    <String, String> {
-      'nickname': _lastKnownStatus['nickname'],
-      'vin': _lastKnownStatus['vin']
-    };
+  Map<String, String> getVehicleStatus() => <String, String>{
+        'nickname': _lastKnownStatus['nickname'],
+        'vin': _lastKnownStatus['vin']
+      };
 
   Future<Map<String, String>> fetchDailyStatistics(DateTime targetDate);
   Future<Map<String, String>> fetchMonthlyStatistics(DateTime targetDate);
@@ -63,8 +64,9 @@ abstract class Vehicle {
   Future<bool> startCharging();
 
   Future<Map<String, String>> fetchClimateStatus();
+
   Future<bool> startClimate(int targetTemperatureCelsius);
   Future<bool> stopClimate();
+
+  Future<Map<String, String>> fetchLocation();
 }
-
-
