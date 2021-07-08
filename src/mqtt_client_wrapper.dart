@@ -100,8 +100,8 @@ class MqttClientWrapper {
 
   void _receiveData(List<MqttReceivedMessage<MqttMessage>> messages) {
     // Using fromList because I am not able to create a Uint8Buffer for some reason.
-    final MqttByteBuffer byteBuffer =
-        MqttByteBuffer.fromList(List<int>.empty());
+    // final MqttByteBuffer byteBuffer =
+    //     MqttByteBuffer.fromList(List<int>.empty());
     for (final MqttReceivedMessage<MqttMessage> message in messages) {
       final MqttPublishMessage pubMessage =
           message.payload as MqttPublishMessage;
