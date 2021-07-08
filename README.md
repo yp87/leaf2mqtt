@@ -42,13 +42,13 @@ docker run --restart always -e LEAF_USERNAME="myusername@somewhere.com" -e LEAF_
 
 :information_source: The `CHARGING_UPDATE_INTERVAL_MINUTES` value will only be used after the ongoing `UPDATE_INTERVAL_MINUTES` is elapsed and the Leaf is charging.
 
-####:boat: Helm Chart
+#### :boat: Helm Chart
 There is a helm chart available for leaf2mqtt available at [k8s-at-home](https://github.com/k8s-at-home/charts/tree/master/charts/stable/leaf2mqtt)
 
-##:memo: Status and Commands
+## :memo: Status and Commands
 In these examples, the `MQTT_BASE_TOPIC` is set to the default (`leaf`). 
 
-####:red_car: General
+#### :red_car: General
 ##### Status
 | Topic  | Type | Description |
 | ------ | ---- | ----------- |
@@ -61,7 +61,7 @@ In these examples, the `MQTT_BASE_TOPIC` is set to the default (`leaf`).
 | leaf/{vin}/command | update | Request an update for all status  |
 
 
-####:battery: Battery
+#### :battery: Battery
 ##### Status
 | Topic  | Type | Description |
 | ------ | ---- | ----------- |
@@ -86,7 +86,7 @@ In these examples, the `MQTT_BASE_TOPIC` is set to the default (`leaf`).
 | leaf/{vin}/command/battery | update | Request an update for all battery status  |
 | leaf/{vin}/command/battery | startCharging | Request the Leaf to start charging  |
 
-####:snowflake: Climate
+#### :snowflake: Climate
 ##### Status
 | Topic  | Type | Description |
 | ------ | ---- | ----------- |
@@ -104,7 +104,7 @@ In these examples, the `MQTT_BASE_TOPIC` is set to the default (`leaf`).
 | leaf/{vin}/command/climate | startF XY | Request the Leaf to start climate control at XY Fahrenheit |
 | leaf/{vin}/command/climate | stop | Request the Leaf to stop climate control |
 
-####:satellite: Location
+#### :satellite: Location
 ##### Status
 | Topic  | Type | Description |
 | ------ | ---- | ----------- |
@@ -117,7 +117,7 @@ In these examples, the `MQTT_BASE_TOPIC` is set to the default (`leaf`).
 | ----- | ------- | ----------- |
 | leaf/{vin}/command/location | update | Request an update for location |
 
-####:calendar: Stats
+#### :calendar: Stats
 `{TimeRange}` must be `daily` or `monthly`.
 
 ##### Status
@@ -146,7 +146,7 @@ In these examples, the `MQTT_BASE_TOPIC` is set to the default (`leaf`).
 
 :warning: Not all status and commands are supported for a given leaf type due to Carwings, NissanConnectNA or NissanConnect api limitations.
 
-###:house: Home Assistant Integration
+### :house: Home Assistant Integration
 #### Sensor examples
 ```
 sensors:
@@ -253,6 +253,6 @@ device_tracker:
       Leaf: leaf/XXXXSOMEXVINXXXXX/location/location
 ```
 
-###:handshake: Credits
+### :handshake: Credits
 - Forked from [yp87/leaf2mqtt](https://github.com/yp87/leaf2mqtt). Thanks for a great basis on which to enhance. 
 - Using libraries from [Tobias Westergaard Kjeldsen](https://gitlab.com/tobiaswkjeldsen) to connect with the nissan leaf's APIs. Those libraries are also used for his [MyLeaf app](https://gitlab.com/tobiaswkjeldsen/carwingsflutter).
