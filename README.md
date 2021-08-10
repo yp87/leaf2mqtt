@@ -11,7 +11,7 @@ For this to work with other applications / Home Automation systems - an MQTT bro
 
 This should work with multiple Leafs, has only been briefly tested. Please open an issue with feedback if you encounter issues. 
 
-###Overview
+### Overview
 - :rocket: [Setup](#setup)
 - :memo: [Status and Commands](#status-and-commands)
 - :house: [Home Assistant integration](#home-assistant-integration)
@@ -35,7 +35,7 @@ leaf2mqtt is packaged as a container. This is an automatically published / updat
 | CHARGING_UPDATE_INTERVAL_MINUTES* | Yes | Time between automatic status refresh when charging. Default is **60** |
 | LOG_LEVEL | Yes | The log verbosity used by leaf2mqtt. Default is **Warning** [Possible Levels](https://pub.dev/packages/logging) |
 
-#####Example:
+##### Example:
 ```
 docker run --restart always -e LEAF_USERNAME="myusername@somewhere.com" -e LEAF_PASSWORD="Some P4ssword!" -e LEAF_TYPE="newerThanMay2019" -e MQTT_HOST=192.168.1.111 -e UPDATE_INTERVAL_MINUTES=1440 --name leaf2mqtt ghcr.io/k8s-at-home/leaf2mqtt:latest
 ```
@@ -221,7 +221,7 @@ It's possible to build a climate based control for the Leaf in Home-Assistant. T
 sensor:
   - platform: mqtt
     name: "LEAF Target Temp"
-    state_topic: "leaf/XXXXXSOMEXVINXXXXX/command/climateTargetTempC"
+    state_topic: "leaf/XXXXXSOMEXVINXXXXX/climate/climateTargetTempC"
     device_class: temperature
     unit_of_measurement: "C"
 
@@ -236,11 +236,11 @@ climate:
     mode_state_topic: "leaf/XXXXXSOMEXVINXXXXX/climate/RunningStatus"
     mode_state_template: "{{'auto' if value == 'true' else 'off'}}"
     current_temperature_topic: "leaf/XXXXXSOMEXVINXXXXX/climate/cabinTemperatureC"
-    temperature_state_topic: "leaf/XXXXXSOMEXVINXXXXX/climate/targetTemperatureC"
+    temperature_state_topic: "leaf/XXXXXSOMEXVINXXXXX/climate/climateTargetTempC"
     min_temp: 16
     max_temp: 26
     precision: 1.0
-    temperature_command_topic: "leaf/XXXXSOMEXVINXXXXX/command/climateTargetTempC"
+    temperature_command_topic: "leaf/XXXXXSOMEXVINXXXXX/climate/climateTargetTempC"
 ```
 
 #### Home-Assistant Location Integration
