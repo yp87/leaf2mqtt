@@ -41,7 +41,7 @@ packages:
     description:
       path: "."
       ref: HEAD
-      resolved-ref: "405a89ed99fa296ea3dae0e72b6636bea50738bd"
+      resolved-ref: d8354266d0bd6f39ab0aa16d44ac35983bb30e81
       url: "https://github.com/Tobiaswk/dartcarwings"
     source: git
     version: "1.0.0"
@@ -50,7 +50,7 @@ packages:
     description:
       path: "."
       ref: HEAD
-      resolved-ref: "2a5b7e449fb0762712cc17fea75c703182708323"
+      resolved-ref: a154538c2ffde5a2b5c022719a63424f685f4dba
       url: "https://github.com/Tobiaswk/dartnissanconnect"
     source: git
     version: "1.0.0"
@@ -59,7 +59,7 @@ packages:
     description:
       path: "."
       ref: HEAD
-      resolved-ref: "902946e38daabd60e08ddd4c93fcdaefa418fb07"
+      resolved-ref: "8b2711cf63f63f8413ba537150355e7eeac2dae3"
       url: "https://github.com/Tobiaswk/dartnissanconnectna"
     source: git
     version: "1.0.0"
