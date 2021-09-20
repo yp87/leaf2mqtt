@@ -18,7 +18,8 @@ class NissanConnectNASessionWrapper extends LeafSessionInternal {
   @override
   Future<void> login() async {
     _session = NissanConnectSession(debug: _log.level <= Level.FINER);
-    await _session.login(username: username, password: password, countryCode: _countryCode);
+    const String fakeAndroidUserAgent = 'Dalvik/2.1.0 (Linux; U; Android 5.1.1; Android SDK built for x86 Build/LMY48X)';
+    await _session.login(username: username, password: password, countryCode: _countryCode, userAgent: fakeAndroidUserAgent);
 
     final List<VehicleInternal> newVehicles = _session.vehicles.map((NissanConnectVehicle vehicle) =>
       NissanConnectNAVehicleWrapper(vehicle)).toList();

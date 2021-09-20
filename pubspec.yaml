@@ -10,8 +10,6 @@ dependencies:
     git: https://github.com/Tobiaswk/dartcarwings
 
   mqtt_client: ^9.3.1
-
   logging: ^1.0.1
-
 environment:
   sdk: '>=2.10.0 <3.0.0'
