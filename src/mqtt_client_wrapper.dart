@@ -19,6 +19,7 @@ class MqttClientWrapper {
 
     _log.info('Creating MQTT client with $mqttHost:$mqttPort listening on $_baseTopic.');
     _mqttClient = MqttServerClient.withPort(mqttHost, 'leaf2mqtt', mqttPort);
+    _mqttClient.keepAlivePeriod = 60;
   }
 
   MqttServerClient _mqttClient;
