@@ -51,20 +51,23 @@ Future<void> main() async {
     exit(2);
   }
 
-  _session = LeafSessionFactory.createLeafSession(leafType, leafUser, leafPassword);
-
-  await _login();
-
   final MqttClientWrapper mqttClient = MqttClientWrapper();
-  mqttClient.onConnected = () => _onConnected(mqttClient);
   await mqttClient.connectWithRetry(envVars['MQTT_USERNAME'], envVars['MQTT_PASSWORD']);
+
+  _session = LeafSessionFactory.createLeafSession(leafType, leafUser, leafPassword);
+  _session.onExecutionError = (String vin) => _onExecutionError(mqttClient, vin);
+
+  await _login(mqttClient);
+
+  mqttClient.onConnected = () => _onConnected(mqttClient);
+  _onConnected(mqttClient);
 
   // Starting one loop per vehicle because each can have different interval depending on their state.
   await Future.wait(_session.vehicles.map((Vehicle vehicle) => startUpdateLoop(mqttClient, vehicle.vin)));
 }
 
 Completer<void> _loginCompleter;
-Future<void> _login() async {
+Future<void> _login(MqttClientWrapper mqttClient) async {
   if (_loginCompleter != null) {
     _log.fine('Already logging in, waiting...');
     // already logging in.. wait for it to complete.
@@ -87,6 +90,7 @@ Future<void> _login() async {
       _log.warning('An error occured while logging in. Please make sure you have selected the right LEAF_TYPE, LEAF_USERNAME and LEAF_PASSWORD. Retrying in 5 seconds.');
       _log.fine(e);
       _log.fine(stacktrace);
+      _onExecutionError(mqttClient);
       await Future<void>.delayed(const Duration(seconds: 5));
     }
   }
@@ -244,6 +248,15 @@ void _onConnected(MqttClientWrapper mqttClient) {
   _log.info('MQTT connected.');
   mqttClient.subscribeToCommandTopic();
   mqttClient.publishStates(_session.getAllLastKnownStatus());
+}
+
+void _onExecutionError(MqttClientWrapper mqttClient, [String vin]) {
+  _log.warning('Could not execute request.');
+  final String errorDateTime = DateTime.now().toUtc().toIso8601String();
+  mqttClient.publishMessage('lastErrorDateTimeUtc', errorDateTime);
+  if (vin != null) {
+    mqttClient.publishMessage('{vin}/lastErrorDateTimeUtc', errorDateTime);
+  }
 }
 
 extension on MqttClientWrapper {

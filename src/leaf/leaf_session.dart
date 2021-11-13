@@ -80,9 +80,13 @@ abstract class LeafSessionInternal extends LeafSession {
       } );
 }
 
+  /// The client Connect callback type
+typedef ExecutionErrorCallback = void Function(String vin);
 typedef ExecutableVehicleActionHandler<T> = Future<T> Function(Vehicle vehicle);
 typedef SyncExecutableVehicleActionHandler<T> = T Function(Vehicle vehicle);
 abstract class LeafSession {
+
+  ExecutionErrorCallback onExecutionError;
 
   List<Vehicle> get vehicles;
 
@@ -131,6 +135,11 @@ abstract class LeafSession {
       }
 
       ++attempts;
+    }
+
+    if (onExecutionError != null)
+    {
+      onExecutionError(vin);
     }
 
     return null;

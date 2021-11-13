@@ -64,6 +64,7 @@ In these examples, the `MQTT_BASE_TOPIC` is set to the default (`leaf`).
 | ------ | ---- | ----------- |
 | leaf/{vin}/nickname | String | The reported nickname of the leaf  |
 | leaf/{vin}/vin  | String | The reported vin of the leaf  |
+| leaf/{vin}/lastErrorDateTimeUtc  | Iso8601 UTC | The datetime of the last failed command execution or status query |
 
 #### Commands
 | Topic | Payload | Description |
