@@ -137,8 +137,7 @@ abstract class LeafSession {
       ++attempts;
     }
 
-    if (onExecutionError != null)
-    {
+    if (onExecutionError != null) {
       onExecutionError(vin);
     }
 
