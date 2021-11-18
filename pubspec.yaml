@@ -3,7 +3,7 @@ version: 0.0.1
 publish_to: 'none'
 dependencies:
   dartnissanconnectna:
-    git: https://github.com/Tobiaswk/dartnissanconnectna
+    git: https://gitlab.com/yp87/dartnissanconnectna
   dartnissanconnect:
     git: https://github.com/Tobiaswk/dartnissanconnect
   dartcarwings:
