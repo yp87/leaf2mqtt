@@ -94,7 +94,7 @@ class NissanConnectNAVehicleWrapper extends VehicleInternal {
 
   @override
   Future<bool> startClimate(int targetTemperatureCelsius) =>
-    _getVehicle().requestClimateControlOn(DateTime.now().add(const Duration(seconds: 5)));
+    _getVehicle().requestClimateControlOn(DateTime.now());
 
   @override
   Future<bool> stopClimate() =>
