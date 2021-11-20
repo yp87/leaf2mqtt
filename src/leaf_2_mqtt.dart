@@ -8,6 +8,7 @@ import 'leaf/leaf_vehicle.dart';
 import 'mqtt_client_wrapper.dart';
 
 LeafSession _session;
+int _commandAttempts = 2;
 final Logger _log = Logger('main');
 
 Future<void> main() async {
@@ -51,10 +52,12 @@ Future<void> main() async {
     exit(2);
   }
 
+  _commandAttempts = int.tryParse(envVars['COMMAND_ATTEMPTS']  ?? '1') ?? 1;
+
   final MqttClientWrapper mqttClient = MqttClientWrapper();
   await mqttClient.connectWithRetry(envVars['MQTT_USERNAME'], envVars['MQTT_PASSWORD']);
 
-  _session = LeafSessionFactory.createLeafSession(leafType, leafUser, leafPassword);
+  _session = createLeafSession(leafType, leafUser, leafPassword);
   _session.onExecutionError = (String vin) => _onExecutionError(mqttClient, vin);
 
   await _login(mqttClient);
@@ -144,7 +147,7 @@ void subscribeToCommands(MqttClientWrapper mqttClient, String vin) {
             fetchAndPublishBatteryStatus(mqttClient, vin);
           break;
         case 'startcharging':
-            _session.executeCommandWithRetry((Vehicle vehicle) => vehicle.startCharging(), vin).then(
+            _session.executeCommandWithRetry((Vehicle vehicle) => vehicle.startCharging(), vin, _commandAttempts).then(
               (_) => Future<void>.delayed(const Duration(seconds: 5)).then(
                 (_) => fetchAndPublishBatteryStatus(mqttClient, vin)));
           break;
@@ -158,7 +161,7 @@ void subscribeToCommands(MqttClientWrapper mqttClient, String vin) {
           fetchAndPublishClimateStatus(mqttClient, vin);
         break;
       case 'stop':
-          _session.executeCommandWithRetry((Vehicle vehicle) => vehicle.stopClimate(), vin).then(
+          _session.executeCommandWithRetry((Vehicle vehicle) => vehicle.stopClimate(), vin, _commandAttempts).then(
             (_) => Future<void>.delayed(const Duration(seconds: 5)).then(
               (_) => fetchAndPublishClimateStatus(mqttClient, vin)));
         break;
@@ -184,7 +187,7 @@ void subscribeToCommands(MqttClientWrapper mqttClient, String vin) {
 
           if (targetTemperatureCelsius != null){
             _session.executeCommandWithRetry((Vehicle vehicle) =>
-              vehicle.startClimate(targetTemperatureCelsius), vin).then(
+              vehicle.startClimate(targetTemperatureCelsius), vin, _commandAttempts).then(
                 (_) => Future<void>.delayed(const Duration(seconds: 5)).then(
                   (_) => fetchAndPublishClimateStatus(mqttClient, vin)));
           }

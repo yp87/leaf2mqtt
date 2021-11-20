@@ -15,37 +15,35 @@ enum LeafType {
   // olderJapan,
 }
 
-class LeafSessionFactory {
-  static LeafSession createLeafSession(LeafType leafType, String username, String password) {
-    switch (leafType) {
-      case LeafType.newerThanMay2019:
-        return NissanConnectSessionWrapper(username, password);
-        break;
+LeafSession createLeafSession(LeafType leafType, String username, String password) {
+  switch (leafType) {
+    case LeafType.newerThanMay2019:
+      return NissanConnectSessionWrapper(username, password);
+      break;
 
-      case LeafType.olderCanada:
-        return NissanConnectNASessionWrapper('CA', username, password);
-        break;
+    case LeafType.olderCanada:
+      return NissanConnectNASessionWrapper('CA', username, password);
+      break;
 
-      case LeafType.olderUsa:
-        return NissanConnectNASessionWrapper('US', username, password);
-        break;
+    case LeafType.olderUsa:
+      return NissanConnectNASessionWrapper('US', username, password);
+      break;
 
-      default:
-        throw ArgumentError.value(leafType, 'leafType', 'this LeafType is not supported yet.');
+    default:
+      throw ArgumentError.value(leafType, 'leafType', 'this LeafType is not supported yet.');
 
-      // Need to have a working blowfish encryption.
-      /*case LeafType.olderEurope:
-        return CarwingsWrapper(CarwingsRegion.Europe);
-        break;
+    // Need to have a working blowfish encryption.
+    /*case LeafType.olderEurope:
+      return CarwingsWrapper(CarwingsRegion.Europe);
+      break;
 
-      case LeafType.olderJapan:
-        return CarwingsWrapper(CarwingsRegion.Japan);
-        break;
+    case LeafType.olderJapan:
+      return CarwingsWrapper(CarwingsRegion.Japan);
+      break;
 
-      case LeafType.olderAustralia:
-        return CarwingsWrapper(CarwingsRegion.Australia);
-        break;*/
-    }
+    case LeafType.olderAustralia:
+      return CarwingsWrapper(CarwingsRegion.Australia);
+      break;*/
   }
 }
 
@@ -108,15 +106,37 @@ abstract class LeafSession {
       return null;
   }
 
-  Future<void> executeCommandWithRetry(ExecutableVehicleActionHandler<bool> executable, String vin) async {
-    await executeWithRetry((Vehicle vehicle) async {
-      if (!await executable(vehicle)) {
-        throw Exception('Command returned false.');
+  Future<void> executeCommandWithRetry(ExecutableVehicleActionHandler<bool> executable, String vin, int commandAttempts) async {
+    bool anyCommandSucceeded = false;
+    for (int attempts = 0; attempts < commandAttempts; ++attempts) {
+      try {
+        anyCommandSucceeded |= await _executeWithRetry((Vehicle vehicle) async {
+          return await executable(vehicle);
+        }, vin);
+      } catch(e, stackTrace) {
+        _logException(e, stackTrace);
       }
-    }, vin);
+    }
+
+    if (!anyCommandSucceeded && onExecutionError != null) {
+        onExecutionError(vin);
+      }
   }
 
   Future<T> executeWithRetry<T>(ExecutableVehicleActionHandler<T> executable, String vin) async {
+    try {
+      await _executeWithRetry(executable, vin);
+    } catch(e, stackTrace) {
+      _logException(e, stackTrace);
+      if (onExecutionError != null) {
+        onExecutionError(vin);
+      }
+    }
+
+    return null;
+  }
+
+  Future<T> _executeWithRetry<T>(ExecutableVehicleActionHandler<T> executable, String vin) async {
     int attempts = 0;
     while (attempts < 2) {
       if (attempts > 0) {
@@ -137,11 +157,7 @@ abstract class LeafSession {
       ++attempts;
     }
 
-    if (onExecutionError != null) {
-      onExecutionError(vin);
-    }
-
-    return null;
+    throw Exception('Execution failed.');
   }
 
   Future<T> _execute<T>(ExecutableVehicleActionHandler<T> executable, String vin) {
