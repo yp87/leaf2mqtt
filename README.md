@@ -1,3 +1,4 @@
+![Docker Pulls](https://img.shields.io/docker/pulls/yp87/leaf2mqtt) ![Docker Image Version (latest by date)](https://img.shields.io/docker/v/yp87/leaf2mqtt)
 # leaf2mqtt
 > :warning: If you're not using the Leaf frequently, stop the container or drastically reduce the update frequency, or you could well end up with a flat 12V battery.
 
