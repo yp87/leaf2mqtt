@@ -125,7 +125,7 @@ abstract class LeafSession {
 
   Future<T> executeWithRetry<T>(ExecutableVehicleActionHandler<T> executable, String vin) async {
     try {
-      await _executeWithRetry(executable, vin);
+      return await _executeWithRetry(executable, vin);
     } catch(e, stackTrace) {
       _logException(e, stackTrace);
       if (onExecutionError != null) {
