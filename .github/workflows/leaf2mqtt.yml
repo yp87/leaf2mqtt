@@ -24,4 +24,5 @@ jobs:
         with:
           context: .
           push: true
+          image: yp87/leaf2mqtt
           tags: ${{ github.run_number }}, latest
