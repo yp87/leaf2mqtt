@@ -25,8 +25,9 @@ jobs:
         uses: docker/metadata-action@98669ae865ea3cffbcbaa878cf57c20bbf1c6c38
         with:
           images: yp87/leaf2mqtt
-          tags: type=raw,value=${{ github.run_number }}
-          flavor: latest=auto
+          tags: |
+            type=raw,value=${{ github.run_number }}
+            type=raw,value=latest
 
       - name: Build and push Docker image
         uses: docker/build-push-action@ad44023a93711e3deb337508980b4b5e9bcdc5dc
