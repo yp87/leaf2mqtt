@@ -4,7 +4,6 @@ on:
   push:
     branches:
       - main
-      - test_workflow
 
 jobs:
   push_to_registry:
