@@ -1,5 +1,7 @@
+import 'package:dartcarwings/dartcarwings.dart';
 import 'package:logging/logging.dart';
 
+import 'carwings_wrapper.dart';
 import 'leaf_vehicle.dart';
 import 'nissan_connect_na_wrapper.dart';
 import 'nissan_connect_wrapper.dart';
@@ -10,9 +12,9 @@ enum LeafType {
   newerThanMay2019,
   olderCanada,
   olderUsa,
-  // olderEurope,
-  // olderAustralia,
-  // olderJapan,
+  olderEurope,
+  olderAustralia,
+  olderJapan,
 }
 
 LeafSession createLeafSession(LeafType leafType, String username, String password) {
@@ -29,21 +31,20 @@ LeafSession createLeafSession(LeafType leafType, String username, String passwor
       return NissanConnectNASessionWrapper('US', username, password);
       break;
 
-    default:
-      throw ArgumentError.value(leafType, 'leafType', 'this LeafType is not supported yet.');
-
-    // Need to have a working blowfish encryption.
-    /*case LeafType.olderEurope:
-      return CarwingsWrapper(CarwingsRegion.Europe);
+    case LeafType.olderEurope:
+      return CarwingsWrapper(CarwingsRegion.Europe, username, password);
       break;
 
     case LeafType.olderJapan:
-      return CarwingsWrapper(CarwingsRegion.Japan);
+      return CarwingsWrapper(CarwingsRegion.Japan, username, password);
       break;
 
     case LeafType.olderAustralia:
-      return CarwingsWrapper(CarwingsRegion.Australia);
-      break;*/
+      return CarwingsWrapper(CarwingsRegion.Australia, username, password);
+      break;
+
+    default:
+      throw ArgumentError.value(leafType, 'leafType', 'this LeafType is not supported yet.');
   }
 }
 

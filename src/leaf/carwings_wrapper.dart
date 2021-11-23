@@ -17,19 +17,12 @@ class CarwingsWrapper extends LeafSessionInternal {
   @override
   Future<void> login() async {
     _session = CarwingsSession();
-    await _session.login(username: username, password: password, region: _region,
-                         blowfishEncryptCallback: blowFishEncrypt);
+    await _session.login(username: username, password: password, region: _region);
 
     final List<VehicleInternal> newVehicles = _session.vehicles.map((CarwingsVehicle vehicle) =>
       CarwingsVehicleWrapper(vehicle)).toList();
 
     setVehicles(newVehicles);
-  }
-
-  Future<String> blowFishEncrypt(String keyString, String password) async {
-    // Use starflut to do it in python? need to have flutter sdk...
-    // Maybe do it in js? would need nodejs.
-    throw UnimplementedError('Cannot connect to CarWings Api: Blowfish encryption is not implemented yet.');
   }
 }
 
@@ -83,8 +76,10 @@ class CarwingsVehicleWrapper extends VehicleInternal {
   }
 
   @override
-  Future<bool> startCharging() =>
-    _getVehicle().requestChargingStart(DateTime.now().add(const Duration(seconds: 5)));
+  Future<bool> startCharging() async {
+    await _getVehicle().requestChargingStart(DateTime.now());
+    return true;
+  }
 
   @override
   Future<Map<String, String>> fetchClimateStatus() async {
@@ -98,10 +93,14 @@ class CarwingsVehicleWrapper extends VehicleInternal {
   }
 
   @override
-  Future<bool> startClimate(int targetTemperatureCelsius) =>
-    _getVehicle().requestClimateControlOn();
+  Future<bool> startClimate(int targetTemperatureCelsius) async {
+      await _getVehicle().requestClimateControlOn();
+      return true;
+  }
 
   @override
-  Future<bool> stopClimate() =>
-    _getVehicle().requestClimateControlOff();
+  Future<bool> stopClimate() async {
+    await _getVehicle().requestClimateControlOff();
+    return true;
+  }
 }
