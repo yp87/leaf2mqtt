@@ -40,7 +40,7 @@ Should work with multiple Leafs, but it is untested. Please open an issue with f
 |-----------|----------|-------------|
 | LEAF_USERNAME | No | Your NissanConnect username ||
 | LEAF_PASSWORD | No | Your NissanConnect password |
-| LEAF_TYPE | No | newerThanMay2019, olderCanada or olderUSA |
+| LEAF_TYPE | No | newerThanMay2019, olderCanada, olderUSA, olderEurope, olderAustralia or olderJapan |
 | MQTT_HOST | No | IP or hostname of your mqtt broker. Localhost or 127.0.0.1 will not work when using Docker, use real host LAN ip |
 | MQTT_PORT | Yes | Port of your mqtt broker. Default is 1883  |
 | MQTT_USERNAME | Yes | Your mqtt username |
@@ -48,8 +48,7 @@ Should work with multiple Leafs, but it is untested. Please open an issue with f
 | MQTT_BASE_TOPIC | Yes | The root MQTT topic for leaf2mqtt. Default is "leaf" |
 | UPDATE_INTERVAL_MINUTES | Yes | Time between automatic status refresh. Default is 60 |
 | CHARGING_UPDATE_INTERVAL_MINUTES* | Yes | Time between automatic status refresh when charging. Default is 60 |
-| COMMAND_ATTEMPTS | Yes | Number of attempts for any command regardless of success or failure. 
-Default is 1 |
+| COMMAND_ATTEMPTS | Yes | Number of attempts for any command regardless of success or failure. Default is 1 |
 | LOG_LEVEL | Yes | The log verbosity used by leaf2mqtt. Default is "Warning" |
 
 Example:
