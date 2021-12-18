@@ -48,12 +48,12 @@ Should work with multiple Leafs, but it is untested. Please open an issue with f
 | MQTT_BASE_TOPIC | Yes | The root MQTT topic for leaf2mqtt. Default is "leaf" |
 | UPDATE_INTERVAL_MINUTES | Yes | Time between automatic status refresh. Default is 60 |
 | CHARGING_UPDATE_INTERVAL_MINUTES* | Yes | Time between automatic status refresh when charging. Default is 60 |
-| COMMAND_ATTEMPTS | Yes | Number of attempts for any command regardless of success or failure. Default is 1 |
+| COMMAND_ATTEMPTS | Yes | Number of attempts for any command regardless of success or failure. Since some of the Nissan apis are unreliable, I recommend a value of 5. Default is 1. |
 | LOG_LEVEL | Yes | The log verbosity used by leaf2mqtt. Default is "Warning" |
 
 Example:
 
-    docker run --restart always -e LEAF_USERNAME="myusername@somewhere.com" -e LEAF_PASSWORD="Some P4ssword!" -e LEAF_TYPE="newerThanMay2019" -e MQTT_HOST=192.168.1.111 -e UPDATE_INTERVAL_MINUTES=1440 --name leaf2mqtt leaf2mqtt
+    docker run --restart always -e LEAF_USERNAME="myusername@somewhere.com" -e LEAF_PASSWORD="Some P4ssword!" -e LEAF_TYPE="newerThanMay2019" -e MQTT_HOST=192.168.1.111 -e UPDATE_INTERVAL_MINUTES=1440 -e COMMAND_ATTEMPTS=5 --name leaf2mqtt leaf2mqtt
 
 :information_source:* The `CHARGING_UPDATE_INTERVAL_MINUTES` value will only be used after the ongoing `UPDATE_INTERVAL_MINUTES` is elapsed and the Leaf is charging.
 

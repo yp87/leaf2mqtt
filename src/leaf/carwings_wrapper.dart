@@ -83,7 +83,7 @@ class CarwingsVehicleWrapper extends VehicleInternal {
 
   @override
   Future<Map<String, String>> fetchClimateStatus() async {
-    final CarwingsCabinTemperature cabinTemperature = await _getVehicle().requestCabinTemperatureLatest();
+    final CarwingsCabinTemperature cabinTemperature = await _getVehicle().requestCabinTemperature();
     final CarwingsHVAC hvac = await _getVehicle().requestHVACStatus();
 
     return saveAndPrependVin(ClimateInfoBuilder()
