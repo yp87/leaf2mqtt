@@ -105,7 +105,7 @@ In these examples, the `MQTT_BASE_TOPIC` is set to the default (`leaf`).
 | ------ | ---- | ----------- |
 | leaf/{vin}/climate/cabinTemperatureC | Double | The reported cabin temperature in Celsius |
 | leaf/{vin}/climate/cabinTemperatureF | Double | The reported cabin temperature in Fahrenheit |
-| leaf/{vin}/climate/runningStatus | Boolean | True if the Leaf is reporting the HVAC as running. False otherwise |
+| leaf/{vin}/climate/RunningStatus | Boolean | True if the Leaf is reporting the HVAC as running. False otherwise |
 | leaf/{vin}/climate/lastReceivedDateTimeUtc | Iso8601 UTC | The datetime when leaf2mqtt received the last climate values |
 
 #### Commands
