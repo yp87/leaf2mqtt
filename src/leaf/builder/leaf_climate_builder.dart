@@ -12,7 +12,8 @@ class ClimateInfoBuilder extends BuilderBase {
     ._withInfo('cabinTemperatureF', (cabinTemperatureCelsius * 9 / 5) + 32);
 
   ClimateInfoBuilder withHvacRunningStatus(bool isRunning) =>
-    _withInfo('RunningStatus', isRunning);
+    _withInfo('RunningStatus', isRunning)
+    ._withInfo('runningStatus', isRunning);
 
   ClimateInfoBuilder _withInfo(String infoName, dynamic value) =>
       ClimateInfoBuilder._withInfo(addInfo(infoName, value));
