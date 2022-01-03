@@ -142,6 +142,19 @@ In these examples, the `MQTT_BASE_TOPIC` is set to the default (`leaf`).
 | ----- | ------- | ----------- |
 | leaf/{vin}/command/stats/{TimeRange} | update YYYY-MM-DD HH:MM:SS | Request an update for daily or monthly stats. Date must repect Iso8601 |
 
+### Location
+#### Status
+| Topic  | Type | Description |
+| ------ | ---- | ----------- |
+| leaf/{vin}/location/latitude | String | The reported last known location's latitude in decimal degrees |
+| leaf/{vin}/location/longitude | String | The reported last known location's longitude in decimal degrees |
+| leaf/{vin}/location/lastReceivedDateTimeUtc | Iso8601 UTC | The datetime when leaf2mqtt received the last location values |
+
+#### Commands
+| Topic | Payload | Description |
+| ----- | ------- | ----------- |
+| leaf/{vin}/command/location | update | Request an update for the last known location |
+
 :information_source: The status and commands for the first Leaf in the account are also supported by using the same topic without the {vin}.
 
 :warning: Not all status and commands are supported for a given leaf type due to Carwings, NissanConnectNA or NissanConnect api limitations.
