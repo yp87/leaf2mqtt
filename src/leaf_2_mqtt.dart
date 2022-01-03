@@ -258,7 +258,8 @@ Future<void> fetchAndPublishAllStatus(MqttClientWrapper mqttClient, String vin) 
     Future<void>(() => mqttClient.publishStates(
       _session.executeSync((Vehicle vehicle) => vehicle.getVehicleStatus(), vin))),
     fetchAndPublishBatteryStatus(mqttClient, vin),
-    fetchAndPublishClimateStatus(mqttClient, vin)
+    fetchAndPublishClimateStatus(mqttClient, vin),
+    fetchAndPublishLocation(mqttClient, vin)
   ]);
 }
 
