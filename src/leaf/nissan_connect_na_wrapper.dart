@@ -3,6 +3,7 @@ import 'package:logging/logging.dart';
 
 import 'builder/leaf_battery_builder.dart';
 import 'builder/leaf_climate_builder.dart';
+import 'builder/leaf_location_builder.dart';
 import 'builder/leaf_stats_builder.dart';
 import 'leaf_session.dart';
 import 'leaf_vehicle.dart';
@@ -91,9 +92,10 @@ class NissanConnectNAVehicleWrapper extends VehicleInternal {
 
   @override
   Future<Map<String, String>> fetchClimateStatus() =>
-    Future<Map<String, String>>.value(ClimateInfoBuilder()
-      .withCabinTemperatureCelsius(_getVehicle().incTemperature)
-      .build());
+    Future<Map<String, String>>.value(
+      saveAndPrependVin(ClimateInfoBuilder()
+        .withCabinTemperatureCelsius(_getVehicle().incTemperature)
+        .build()));
 
   @override
   Future<bool> startClimate(int targetTemperatureCelsius) =>
@@ -102,4 +104,13 @@ class NissanConnectNAVehicleWrapper extends VehicleInternal {
   @override
   Future<bool> stopClimate() =>
     _getVehicle().requestClimateControlOff();
+
+  @override
+  Future<Map<String, String>> fetchLocation() async {
+    final NissanConnectLocation location = await _getVehicle().requestLocation(DateTime.now().toUtc());
+    return saveAndPrependVin(LocationInfoBuilder()
+      .withLatitude(location.latitude)
+      .withLongitude(location.longitude)
+      .build());
+  }
 }

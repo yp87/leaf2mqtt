@@ -3,6 +3,7 @@ import 'package:dartnissanconnect/src/nissanconnect_hvac.dart';
 
 import 'builder/leaf_battery_builder.dart';
 import 'builder/leaf_climate_builder.dart';
+import 'builder/leaf_location_builder.dart';
 import 'builder/leaf_stats_builder.dart';
 import 'leaf_session.dart';
 import 'leaf_vehicle.dart';
@@ -111,4 +112,13 @@ class NissanConnectVehicleWrapper extends VehicleInternal {
   @override
   Future<bool> stopClimate() =>
     _getVehicle().requestClimateControlOff();
+
+  @override
+  Future<Map<String, String>> fetchLocation() async {
+    final NissanConnectLocation location = await _getVehicle().requestLocation();
+    return saveAndPrependVin(LocationInfoBuilder()
+      .withLatitude(location.latitude)
+      .withLongitude(location.longitude)
+      .build());
+  }
 }
