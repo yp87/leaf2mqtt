@@ -140,7 +140,7 @@ In these examples, the `MQTT_BASE_TOPIC` is set to the default (`leaf`).
 #### Commands
 | Topic | Payload | Description |
 | ----- | ------- | ----------- |
-| leaf/{vin}/command/stats/{TimeRange} | update YYYY-MM-DD HH:MM:SS | Request an update for daily or monthly stats. Date must repect Iso8601 |
+| leaf/{vin}/command/stats/{TimeRange} | update YYYY-MM-DD HH:MM:SS | Request an update for daily or monthly stats. Date must respect Iso8601 |
 
 ### Location
 #### Status
