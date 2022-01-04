@@ -33,7 +33,7 @@ Should work with multiple Leafs, but it is untested. Please open an issue with f
 ## Setup
 ### Building the image:
 
-    docker build -tag leaf2mqtt .
+    docker build --tag leaf2mqtt .
 
 ### Running the image:
 | Parameter | Optional | Description |
