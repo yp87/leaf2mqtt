@@ -1,0 +1,15 @@
+version: "3"
+
+services:
+  leaf2mqtt:
+    container_name: leaf2mqtt
+    build: .
+    image: leaf2mqtt
+    logging:
+      options:
+        max-size: "1M"
+        max-file: "5"
+    env_file:
+      - local_settings.env
+    restart: unless-stopped
+

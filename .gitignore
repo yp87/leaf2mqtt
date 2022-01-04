@@ -5,3 +5,6 @@ build/
 
 #vscode files to ignore
 .vscode
+
+# per-user config
+local_settings.env
