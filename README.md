@@ -31,6 +31,11 @@ Should work with multiple Leafs, but it is untested. Please open an issue with f
   * [Credits](#credits)
 
 ## Setup
+### Pre-built images:
+You can use pre-built images from here: https://hub.docker.com/r/yp87/leaf2mqtt
+
+tag example: `yp87/leaf2mqtt:latest`
+
 ### Building the image:
 
     docker build --tag leaf2mqtt .
