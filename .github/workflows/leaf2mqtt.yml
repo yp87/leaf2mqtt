@@ -2,6 +2,10 @@ name: Publish Docker image
 
 on:
   push:
+    paths:
+      - 'pubspec.*'
+      - 'src/**'
+      - 'Dockerfile'
     branches:
       - main
 
