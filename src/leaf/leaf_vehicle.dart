@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 abstract class VehicleInternal extends Vehicle {
   VehicleInternal(String nickname, String vin) : super(vin) {
     _lastKnownStatus['nickname'] = nickname;
@@ -50,11 +52,15 @@ abstract class Vehicle {
   final Map<String, String> _lastKnownStatus = <String, String>{};
   Map<String, String> getLastKnownStatus();
 
-  Map<String, String> getVehicleStatus() =>
-    <String, String> {
+  Map<String, String> getVehicleStatus() {
+    Map<String, String> info = {
       'nickname': _lastKnownStatus['nickname'],
-      'vin': _lastKnownStatus['vin']
+      'vin': _lastKnownStatus['vin'],
     };
+
+    info['json'] = json.encode(info);
+    return info;
+  }
 
   Future<Map<String, String>> fetchDailyStatistics(DateTime targetDate);
   Future<Map<String, String>> fetchMonthlyStatistics(DateTime targetDate);

@@ -73,7 +73,7 @@ Example:
 :information_source:* The `CHARGING_UPDATE_INTERVAL_MINUTES` value will only be used after the ongoing `UPDATE_INTERVAL_MINUTES` is elapsed and the Leaf is charging.
 
 ## Status and Commands
-In these examples, the `MQTT_BASE_TOPIC` is set to the default (`leaf`). 
+In these examples, the `MQTT_BASE_TOPIC` is set to the default (`leaf`).
 
 ### General
 #### Status
@@ -82,6 +82,7 @@ In these examples, the `MQTT_BASE_TOPIC` is set to the default (`leaf`).
 | leaf/{vin}/nickname | String | The reported nickname of the leaf  |
 | leaf/{vin}/vin  | String | The reported vin of the leaf  |
 | leaf/{vin}/lastErrorDateTimeUtc  | Iso8601 UTC | The datetime of the last failed command execution or status query |
+| leaf/{vin}/json | String | A json representation of all general status |
 
 #### Commands
 | Topic | Payload | Description |
@@ -107,6 +108,7 @@ In these examples, the `MQTT_BASE_TOPIC` is set to the default (`leaf`).
 | leaf/{vin}/battery/timeToFullL2_6kwInMinutes | Integer | The reported time in minutes to fully charge when charging in full speed L2 (~6kw) |
 | leaf/{vin}/battery/lastUpdatedDateTimeUtc | Iso8601 UTC | The datetime when the last battery values were updated |
 | leaf/{vin}/battery/lastReceivedDateTimeUtc | Iso8601 UTC | The datetime when leaf2mqtt received the last battery values |
+| leaf/{vin}/battery/json | String | A json representation of all battery status |
 
 #### Commands
 | Topic | Payload | Description |
@@ -122,6 +124,7 @@ In these examples, the `MQTT_BASE_TOPIC` is set to the default (`leaf`).
 | leaf/{vin}/climate/cabinTemperatureF | Double | The reported cabin temperature in Fahrenheit |
 | leaf/{vin}/climate/runningStatus | Boolean | True if the Leaf is reporting the HVAC as running. False otherwise |
 | leaf/{vin}/climate/lastReceivedDateTimeUtc | Iso8601 UTC | The datetime when leaf2mqtt received the last climate values |
+| leaf/{vin}/climate/json | String | A json representation of all climate status |
 
 #### Commands
 | Topic | Payload | Description |
@@ -150,7 +153,8 @@ In these examples, the `MQTT_BASE_TOPIC` is set to the default (`leaf`).
 | leaf/{vin}/stats/{TimeRange}/co2ReductionKg | double | The reported number of co2 in Kg saved during specified time range |
 | leaf/{vin}/stats/{TimeRange}/tripsNumber | int | The reported number of trips during specified time range |
 | leaf/{vin}/stats/{TimeRange}/kwhGained | Double | The reported total regen in kWh during specified time range |
-| leaf/{vin}/stats/{TimeRange}/lastReceivedDateTimeUtc | Iso8601 UTC | The datetime when leaf2mqtt received the last climate values |
+| leaf/{vin}/stats/{TimeRange}/lastReceivedDateTimeUtc | Iso8601 UTC | The datetime when leaf2mqtt received the last stats values |
+| leaf/{vin}/stats/json | String | A json representation of all stats |
 
 #### Commands
 | Topic | Payload | Description |
@@ -164,6 +168,7 @@ In these examples, the `MQTT_BASE_TOPIC` is set to the default (`leaf`).
 | leaf/{vin}/location/latitude | String | The reported last known location's latitude in decimal degrees |
 | leaf/{vin}/location/longitude | String | The reported last known location's longitude in decimal degrees |
 | leaf/{vin}/location/lastReceivedDateTimeUtc | Iso8601 UTC | The datetime when leaf2mqtt received the last location values |
+| leaf/{vin}/location/json | String | A json representation of all location status |
 
 #### Commands
 | Topic | Payload | Description |
