@@ -57,7 +57,7 @@ tag example: `yp87/leaf2mqtt:latest`
 | MQTT_PASSWORD | Yes | Your mqtt password |
 | MQTT_BASE_TOPIC | Yes | The root MQTT topic for leaf2mqtt. Default is "leaf" |
 | UPDATE_INTERVAL_MINUTES | Yes | Time between automatic status refresh. Default is 60 |
-| CHARGING_UPDATE_INTERVAL_MINUTES* | Yes | Time between automatic status refresh when charging. Default is 60 |
+| CHARGING_UPDATE_INTERVAL_MINUTES* | Yes | Time between automatic status refresh when charging. Default is 15 |
 | COMMAND_ATTEMPTS | Yes | Number of attempts for any command regardless of success or failure. Since some of the Nissan apis are unreliable, I recommend a value of 5. Default is 1. |
 | LOG_LEVEL | Yes | The log verbosity used by leaf2mqtt. Default is "Warning" |
 
