@@ -9,9 +9,9 @@ You must have a working MQTT broker on your LAN.
 Should work with multiple Leafs, but it is untested. Please open an issue with feedback if possible.
 
 - [Setup](#setup)
-  * [Pre-built images:](#pre-built-images-)
-  * [Building the image:](#building-the-image-)
-  * [Running the image:](#running-the-image-)
+  * [Pre-built images](#pre-built-images-)
+  * [Building the image](#building-the-image-)
+  * [Running the image](#running-the-image-)
 - [Status and Commands](#status-and-commands)
   * [General](#general)
     + [Status](#status)
@@ -34,12 +34,12 @@ Should work with multiple Leafs, but it is untested. Please open an issue with f
 - [Credits](#credits)
 
 ## Setup
-### Pre-built images:
+### Pre-built images
 You can use pre-built images from here: https://hub.docker.com/r/yp87/leaf2mqtt
 
 tag example: `yp87/leaf2mqtt:latest`
 
-### Building the image:
+### Building the image
 
     docker build --tag leaf2mqtt .
 
@@ -48,7 +48,7 @@ tag example: `yp87/leaf2mqtt:latest`
     cp local_settings.env.tmpl local_settings.env
     docker-compose build
 
-### Running the image:
+### Running the image
 | Parameter | Optional | Description |
 |-----------|----------|-------------|
 | LEAF_USERNAME | No | Your NissanConnect username ||
