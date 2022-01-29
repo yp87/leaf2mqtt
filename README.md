@@ -1,5 +1,6 @@
 ![Docker Pulls](https://img.shields.io/docker/pulls/yp87/leaf2mqtt) ![Docker Image Version (latest by date)](https://img.shields.io/docker/v/yp87/leaf2mqtt)
 # leaf2mqtt
+> :warning: olderCanada and olderUSA support may break at anytime because Nissan keep changing the API key.
 > :warning: If you're not using the Leaf frequently, stop the container or drastically reduce the update frequency, or you could well end up with a flat 12V battery.
 
 This works for my Canadian made in 2018 LEAF 40kWh. It was also reported to be working on a newer than May 2019 Leaf.
