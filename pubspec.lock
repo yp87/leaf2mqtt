@@ -66,8 +66,8 @@ packages:
     description:
       path: "."
       ref: HEAD
-      resolved-ref: fe7fbf7dbef24d4bc02b44fb5b72cffa4bc9dfb3
-      url: "https://gitlab.com/yp87/dartnissanconnectna"
+      resolved-ref: c507315e746466d87c2cbe34e6ba85d74347f634
+      url: "https://gitlab.com/tobiaswkjeldsen/dartnissanconnectna"
     source: git
     version: "1.0.0"
   event_bus:
