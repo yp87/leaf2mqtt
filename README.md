@@ -1,3 +1,9 @@
+# This repository is now archived and will not receive any more updates.
+## Nissan is continuously breaking the NissanConnectNA api and making it harder to work around. I prefer to discontinue the support than providing a service that cannot meet reasonable standards.
+### You can freely fork this repository and build over the work that was done.
+Thank you Nissan for working against your customers.
+
+
 ![Docker Pulls](https://img.shields.io/docker/pulls/yp87/leaf2mqtt) ![Docker Image Version (latest by date)](https://img.shields.io/docker/v/yp87/leaf2mqtt)
 # leaf2mqtt
 > :warning: olderCanada and olderUSA support may break at anytime because Nissan keep changing the API key.
