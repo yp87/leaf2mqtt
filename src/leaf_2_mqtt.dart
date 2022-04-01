@@ -36,7 +36,7 @@ Future<void> main() async {
   final String leafPassword = envVars['LEAF_PASSWORD'];
 
   if ((leafUser?.isEmpty ?? true) || (leafPassword?.isEmpty ?? true)) {
-    _log.severe('LEAF_USER and LEAF_PASSWORD environment variables must be set.');
+    _log.severe('LEAF_USERNAME and LEAF_PASSWORD environment variables must be set.');
     exit(1);
   }
 
