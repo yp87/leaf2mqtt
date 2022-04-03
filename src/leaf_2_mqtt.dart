@@ -252,6 +252,12 @@ Future<void> fetchAndPublishLocation(MqttClientWrapper mqttClient, String vin) {
            vehicle.fetchLocation(), vin).then(mqttClient.publishStates);
 }
 
+Future<void> fetchAndPublishCockpitStatus(MqttClientWrapper mqttClient, String vin) {
+  _log.finer('fetchAndPublishCockpit for $vin');
+  return _session.executeWithRetry((Vehicle vehicle) =>
+           vehicle.fetchCockpitStatus(), vin).then(mqttClient.publishStates);
+}
+
 Future<void> fetchAndPublishAllStatus(MqttClientWrapper mqttClient, String vin) {
   _log.finer('fetchAndPublishAllStatus for $vin');
   return Future.wait(<Future<void>> [
@@ -259,7 +265,8 @@ Future<void> fetchAndPublishAllStatus(MqttClientWrapper mqttClient, String vin) 
       _session.executeSync((Vehicle vehicle) => vehicle.getVehicleStatus(), vin))),
     fetchAndPublishBatteryStatus(mqttClient, vin),
     fetchAndPublishClimateStatus(mqttClient, vin),
-    fetchAndPublishLocation(mqttClient, vin)
+    fetchAndPublishLocation(mqttClient, vin),
+    fetchAndPublishCockpitStatus(mqttClient, vin)
   ]);
 }
 

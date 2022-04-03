@@ -113,4 +113,10 @@ class CarwingsVehicleWrapper extends VehicleInternal {
       .withLongitude(location.longitude)
       .build());
   }
+
+  // Note: This is only a dummy method. It returns an empty map.
+  @override
+  Future<Map<String, String>> fetchCockpitStatus() async {
+    return Future<Map<String, String>>.value(<String, String>{});
+  }
 }

@@ -57,8 +57,8 @@ packages:
     description:
       path: "."
       ref: HEAD
-      resolved-ref: "4c3aaf35aa82cee808c470b34aa13bd2bca96fd5"
-      url: "https://github.com/Tobiaswk/dartnissanconnect"
+      resolved-ref: e6ef1b1004482f59ea0d08f7bee8cdf1e2fc3cd5
+      url: "https://gitlab.com/sensor-freak/dartnissanconnect"
     source: git
     version: "1.0.0"
   dartnissanconnectna:
@@ -118,7 +118,7 @@ packages:
       name: mqtt_client
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "9.6.5"
+    version: "9.6.6"
   path:
     dependency: transitive
     description:
