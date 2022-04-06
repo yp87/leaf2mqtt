@@ -1,5 +1,4 @@
-ARG BASE_DART_SDK_IMAGE
-FROM $BASE_DART_SDK_IMAGE AS build
+FROM dart AS build
 
 RUN apt-get update && \
     apt-get install -y git
