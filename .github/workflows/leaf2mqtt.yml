@@ -22,9 +22,9 @@ jobs:
         with:
           username: ${{ secrets.DOCKERHUBUSERNAME }}
           password: ${{ secrets.DOCKERHUBACCESSTOKEN }}
-          
-      - name: Extract metadata (tags, labels) for Docker
-        id: meta
+
+      - name: Extract metadata (tags, labels) for Docker (amd64)
+        id: metaAmd64
         uses: docker/metadata-action@98669ae865ea3cffbcbaa878cf57c20bbf1c6c38
         with:
           images: yp87/leaf2mqtt
@@ -32,9 +32,27 @@ jobs:
             type=raw,value=${{ github.run_number }}
             type=raw,value=latest
 
-      - name: Build and push Docker image
+      - name: Build and push Docker image (amd64)
         uses: docker/build-push-action@ad44023a93711e3deb337508980b4b5e9bcdc5dc
         with:
           context: .
           push: true
-          tags: ${{ steps.meta.outputs.tags }}
+          build-args: BASE_DART_SDK_IMAGE=dart
+          tags: ${{ steps.metaAmd64.outputs.tags }}
+
+      - name: Extract metadata (tags, labels) for Docker (arm64)
+        id: metaArm64
+        uses: docker/metadata-action@98669ae865ea3cffbcbaa878cf57c20bbf1c6c38
+        with:
+          images: yp87/leaf2mqtt
+          tags: |
+            type=raw,value=${{ github.run_number }}-arm64
+            type=raw,value=latest-arm64
+
+      - name: Build and push Docker image (arm64)
+        uses: docker/build-push-action@ad44023a93711e3deb337508980b4b5e9bcdc5dc
+        with:
+          context: .
+          push: true
+          build-args: BASE_DART_SDK_IMAGE=arm64v8/dart
+          tags: ${{ steps.metaArm64.outputs.tags }}
