@@ -6,6 +6,7 @@ on:
       - 'pubspec.*'
       - 'src/**'
       - 'Dockerfile'
+      - '.github/workflows/**'
     branches:
       - main
 
