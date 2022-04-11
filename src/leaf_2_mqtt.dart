@@ -220,6 +220,15 @@ void subscribeToCommands(MqttClientWrapper mqttClient, String vin) {
         default:
       }
     });
+
+  subscribe('command/cockpitStatus', (String payload) {
+    switch (payload) {
+      case 'update':
+          fetchAndPublishCockpitStatus(mqttClient, vin);
+        break;
+      default:
+    }
+  });
 }
 
 Future<void> fetchAndPublishDailyStats(MqttClientWrapper mqttClient, String vin, DateTime targetDay) {
