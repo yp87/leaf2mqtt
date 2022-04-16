@@ -36,7 +36,7 @@ Future<void> main() async {
   final String leafPassword = envVars['LEAF_PASSWORD'];
 
   if ((leafUser?.isEmpty ?? true) || (leafPassword?.isEmpty ?? true)) {
-    _log.severe('LEAF_USER and LEAF_PASSWORD environment variables must be set.');
+    _log.severe('LEAF_USERNAME and LEAF_PASSWORD environment variables must be set.');
     exit(1);
   }
 
@@ -220,6 +220,15 @@ void subscribeToCommands(MqttClientWrapper mqttClient, String vin) {
         default:
       }
     });
+
+  subscribe('command/cockpitStatus', (String payload) {
+    switch (payload) {
+      case 'update':
+          fetchAndPublishCockpitStatus(mqttClient, vin);
+        break;
+      default:
+    }
+  });
 }
 
 Future<void> fetchAndPublishDailyStats(MqttClientWrapper mqttClient, String vin, DateTime targetDay) {
@@ -252,6 +261,12 @@ Future<void> fetchAndPublishLocation(MqttClientWrapper mqttClient, String vin) {
            vehicle.fetchLocation(), vin).then(mqttClient.publishStates);
 }
 
+Future<void> fetchAndPublishCockpitStatus(MqttClientWrapper mqttClient, String vin) {
+  _log.finer('fetchAndPublishCockpit for $vin');
+  return _session.executeWithRetry((Vehicle vehicle) =>
+           vehicle.fetchCockpitStatus(), vin).then(mqttClient.publishStates);
+}
+
 Future<void> fetchAndPublishAllStatus(MqttClientWrapper mqttClient, String vin) {
   _log.finer('fetchAndPublishAllStatus for $vin');
   return Future.wait(<Future<void>> [
@@ -259,7 +274,8 @@ Future<void> fetchAndPublishAllStatus(MqttClientWrapper mqttClient, String vin) 
       _session.executeSync((Vehicle vehicle) => vehicle.getVehicleStatus(), vin))),
     fetchAndPublishBatteryStatus(mqttClient, vin),
     fetchAndPublishClimateStatus(mqttClient, vin),
-    fetchAndPublishLocation(mqttClient, vin)
+    fetchAndPublishLocation(mqttClient, vin),
+    fetchAndPublishCockpitStatus(mqttClient, vin)
   ]);
 }
 

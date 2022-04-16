@@ -180,6 +180,17 @@ In these examples, the `MQTT_BASE_TOPIC` is set to the default (`leaf`).
 | ----- | ------- | ----------- |
 | leaf/{vin}/command/location | update | Request an update for the last known location |
 
+### Cockpit Status
+#### Status
+| Topic  | Type | Description |
+| ------ | ---- | ----------- |
+| leaf/{vin}/cockpitStatus/totalMileage | Double | The total mileage from the vehicle. The unit (km or miles) depends on the regional area. |
+
+#### Commands
+| Topic | Payload | Description |
+| ----- | ------- | ----------- |
+| leaf/{vin}/command/cockpitStatus | update | Request an update for the cockpit status |
+
 :information_source: The status and commands for the first Leaf in the account are also supported by using the same topic without the {vin}.
 
 :warning: Not all status and commands are supported for a given leaf type due to Carwings, NissanConnectNA or NissanConnect api limitations.
