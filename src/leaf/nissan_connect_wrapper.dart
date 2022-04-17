@@ -92,7 +92,7 @@ class NissanConnectVehicleWrapper extends VehicleInternal {
         .withTimeToFullL2(battery.timeToFullNormal)
         .withTimeToFullL2_6kw(battery.timeToFullFast)
         .withTimeToFullTrickle(battery.timeToFullSlow)
-        .withChargingSpeed(battery.chargingSpeed.toString())
+        .withChargingSpeed(battery.chargingSpeed.toString().split('.')[1])
         .build());
   }
 
