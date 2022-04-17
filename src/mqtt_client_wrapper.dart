@@ -19,6 +19,7 @@ class MqttClientWrapper {
     _log.info(
         'Creating MQTT client with $mqttHost:$mqttPort listening on $_baseTopic.');
     _mqttClient = MqttServerClient.withPort(mqttHost, 'leaf2mqtt', mqttPort);
+    _mqttClient.keepAlivePeriod = 60;
   }
 
   MqttServerClient _mqttClient;
@@ -99,9 +100,6 @@ class MqttClientWrapper {
   }
 
   void _receiveData(List<MqttReceivedMessage<MqttMessage>> messages) {
-    // Using fromList because I am not able to create a Uint8Buffer for some reason.
-    // final MqttByteBuffer byteBuffer =
-    //     MqttByteBuffer.fromList(List<int>.empty());
     for (final MqttReceivedMessage<MqttMessage> message in messages) {
       final MqttPublishMessage pubMessage =
           message.payload as MqttPublishMessage;

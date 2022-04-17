@@ -2,6 +2,7 @@ import 'package:dartnissanconnectna/dartnissanconnectna.dart';
 import 'package:logging/logging.dart';
 
 import 'builder/leaf_battery_builder.dart';
+import 'builder/leaf_climate_builder.dart';
 import 'builder/leaf_location_builder.dart';
 import 'builder/leaf_stats_builder.dart';
 import 'leaf_session.dart';
@@ -20,8 +21,13 @@ class NissanConnectNASessionWrapper extends LeafSessionInternal {
   @override
   Future<void> login() async {
     _session = NissanConnectSession(debug: _log.level <= Level.FINER);
+    const String fakeAndroidUserAgent =
+        'Dalvik/2.1.0 (Linux; U; Android 5.1.1; Android SDK built for x86 Build/LMY48X)';
     await _session.login(
-        username: username, password: password, countryCode: _countryCode);
+        username: username,
+        password: password,
+        countryCode: _countryCode,
+        userAgent: fakeAndroidUserAgent);
 
     final List<VehicleInternal> newVehicles = _session.vehicles
         .map((NissanConnectVehicle vehicle) =>
@@ -101,11 +107,13 @@ class NissanConnectNAVehicleWrapper extends VehicleInternal {
 
   @override
   Future<Map<String, String>> fetchClimateStatus() =>
-      Future<Map<String, String>>.value(<String, String>{});
+      Future<Map<String, String>>.value(saveAndPrependVin(ClimateInfoBuilder()
+          .withCabinTemperatureCelsius(_getVehicle().incTemperature)
+          .build()));
 
   @override
-  Future<bool> startClimate(int targetTemperatureCelsius) => _getVehicle()
-      .requestClimateControlOn(DateTime.now().add(const Duration(seconds: 5)));
+  Future<bool> startClimate(int targetTemperatureCelsius) =>
+      _getVehicle().requestClimateControlOn(DateTime.now());
 
   @override
   Future<bool> stopClimate() => _getVehicle().requestClimateControlOff();
@@ -113,11 +121,16 @@ class NissanConnectNAVehicleWrapper extends VehicleInternal {
   @override
   Future<Map<String, String>> fetchLocation() async {
     final NissanConnectLocation location =
-        await _getVehicle().requestLocation(DateTime.now());
-
+        await _getVehicle().requestLocation(DateTime.now().toUtc());
     return saveAndPrependVin(LocationInfoBuilder()
         .withLatitude(location.latitude)
         .withLongitude(location.longitude)
         .build());
+  }
+
+  // Note: This is only a dummy method. It returns an empty map.
+  @override
+  Future<Map<String, String>> fetchCockpitStatus() async {
+    return Future<Map<String, String>>.value(<String, String>{});
   }
 }

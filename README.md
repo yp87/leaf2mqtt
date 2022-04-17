@@ -25,19 +25,20 @@ leaf2mqtt is packaged as a container. This is an automatically published / updat
 |-----------|----------|-------------|
 | LEAF_USERNAME | No | Your NissanConnect username ||
 | LEAF_PASSWORD | No | Your NissanConnect password |
-| LEAF_TYPE | No | newerThanMay2019, olderCanada or olderUSA |
-| MQTT_HOST | No | IP or hostname of your mqtt broker. Localhost or 127.0.0.1 may not work when using Docker, use real host LAN IP |
-| MQTT_PORT | Yes | Port of your mqtt broker. Default is **1883**  |
+| LEAF_TYPE | No | newerThanMay2019, olderCanada, olderUSA, olderEurope, olderAustralia or olderJapan |
+| MQTT_HOST | No | IP or hostname of your mqtt broker. Localhost or 127.0.0.1 will not work when using Docker, use real host LAN ip |
+| MQTT_PORT | Yes | Port of your mqtt broker. Default is 1883  |
 | MQTT_USERNAME | Yes | Your mqtt username |
 | MQTT_PASSWORD | Yes | Your mqtt password |
-| MQTT_BASE_TOPIC | Yes | The root MQTT topic for leaf2mqtt. Default is **leaf** |
-| UPDATE_INTERVAL_MINUTES | Yes | Time between automatic status refresh. Default is **60** |
-| CHARGING_UPDATE_INTERVAL_MINUTES* | Yes | Time between automatic status refresh when charging. Default is **60** |
-| LOG_LEVEL | Yes | The log verbosity used by leaf2mqtt. Default is **Warning** [Possible Levels](https://pub.dev/packages/logging) |
+| MQTT_BASE_TOPIC | Yes | The root MQTT topic for leaf2mqtt. Default is "leaf" |
+| UPDATE_INTERVAL_MINUTES | Yes | Time between automatic status refresh. Default is 60 |
+| CHARGING_UPDATE_INTERVAL_MINUTES* | Yes | Time between automatic status refresh when charging. Default is 15 |
+| COMMAND_ATTEMPTS | Yes | Number of attempts for any command regardless of success or failure. Since some of the Nissan apis are unreliable, I recommend a value of 5. Default is 1. |
+| LOG_LEVEL | Yes | The log verbosity used by leaf2mqtt. Default is "Warning" |
 
 ##### Example:
 ```
-docker run --restart always -e LEAF_USERNAME="myusername@somewhere.com" -e LEAF_PASSWORD="Some P4ssword!" -e LEAF_TYPE="newerThanMay2019" -e MQTT_HOST=192.168.1.111 -e UPDATE_INTERVAL_MINUTES=1440 --name leaf2mqtt ghcr.io/k8s-at-home/leaf2mqtt:latest
+docker run --restart always -e LEAF_USERNAME="myusername@somewhere.com" -e LEAF_PASSWORD="Some P4ssword!" -e LEAF_TYPE="newerThanMay2019" -e MQTT_HOST=192.168.1.111 -e UPDATE_INTERVAL_MINUTES=1440 -e COMMAND_ATTEMPTS=5 --name leaf2mqtt ghcr.io/k8s-at-home/leaf2mqtt:latest
 ```
 
 :information_source: The `CHARGING_UPDATE_INTERVAL_MINUTES` value will only be used after the ongoing `UPDATE_INTERVAL_MINUTES` is elapsed and the Leaf is charging.
@@ -54,6 +55,8 @@ In these examples, the `MQTT_BASE_TOPIC` is set to the default (`leaf`).
 | ------ | ---- | ----------- |
 | leaf/{vin}/nickname | String | The reported nickname of the leaf  |
 | leaf/{vin}/vin  | String | The reported vin of the leaf  |
+| leaf/{vin}/lastErrorDateTimeUtc  | Iso8601 UTC | The datetime of the last failed command execution or status query |
+| leaf/{vin}/json | String | A json representation of all general status |
 
 ##### Commands
 | Topic | Payload | Description |
@@ -79,6 +82,7 @@ In these examples, the `MQTT_BASE_TOPIC` is set to the default (`leaf`).
 | leaf/{vin}/battery/timeToFullL2_6kwInMinutes | Integer | The reported time in minutes to fully charge when charging in full speed L2 (~6kw) |
 | leaf/{vin}/battery/lastUpdatedDateTimeUtc | Iso8601 UTC | The datetime when the last battery values were updated |
 | leaf/{vin}/battery/lastReceivedDateTimeUtc | Iso8601 UTC | The datetime when leaf2mqtt received the last battery values |
+| leaf/{vin}/battery/json | String | A json representation of all battery status |
 
 ##### Commands
 | Topic | Payload | Description |
@@ -94,6 +98,7 @@ In these examples, the `MQTT_BASE_TOPIC` is set to the default (`leaf`).
 | leaf/{vin}/climate/cabinTemperatureF | Double | The reported cabin temperature in Fahrenheit |
 | leaf/{vin}/climate/runningStatus | Boolean | True if the Leaf is reporting the HVAC as running. False otherwise |
 | leaf/{vin}/climate/lastReceivedDateTimeUtc | Iso8601 UTC | The datetime when leaf2mqtt received the last climate values |
+| leaf/{vin}/climate/json | String | A json representation of all climate status |
 
 ##### Commands
 | Topic | Payload | Description |
@@ -135,12 +140,38 @@ In these examples, the `MQTT_BASE_TOPIC` is set to the default (`leaf`).
 | leaf/{vin}/stats/{TimeRange}/co2ReductionKg | double | The reported number of co2 in Kg saved during specified time range |
 | leaf/{vin}/stats/{TimeRange}/tripsNumber | int | The reported number of trips during specified time range |
 | leaf/{vin}/stats/{TimeRange}/kwhGained | Double | The reported total regen in kWh during specified time range |
-| leaf/{vin}/stats/{TimeRange}/lastReceivedDateTimeUtc | Iso8601 UTC | The datetime when leaf2mqtt received the last climate values |
+| leaf/{vin}/stats/{TimeRange}/lastReceivedDateTimeUtc | Iso8601 UTC | The datetime when leaf2mqtt received the last stats values |
+| leaf/{vin}/stats/json | String | A json representation of all stats |
+
+#### Commands
+| Topic | Payload | Description |
+| ----- | ------- | ----------- |
+| leaf/{vin}/command/stats/{TimeRange} | update YYYY-MM-DD HH:MM:SS | Request an update for daily or monthly stats. Date must respect Iso8601 |
+
+### Location
+#### Status
+| Topic  | Type | Description |
+| ------ | ---- | ----------- |
+| leaf/{vin}/location/latitude | String | The reported last known location's latitude in decimal degrees |
+| leaf/{vin}/location/longitude | String | The reported last known location's longitude in decimal degrees |
+| leaf/{vin}/location/lastReceivedDateTimeUtc | Iso8601 UTC | The datetime when leaf2mqtt received the last location values |
+| leaf/{vin}/location/json | String | A json representation of all location status |
+
+#### Commands
+| Topic | Payload | Description |
+| ----- | ------- | ----------- |
+| leaf/{vin}/command/location | update | Request an update for the last known location |
+
+### Cockpit Status
+#### Status
+| Topic  | Type | Description |
+| ------ | ---- | ----------- |
+| leaf/{vin}/cockpitStatus/totalMileage | Double | The total mileage from the vehicle. The unit (km or miles) depends on the regional area. |
 
 ##### Commands
 | Topic | Payload | Description |
 | ----- | ------- | ----------- |
-| leaf/{vin}/command/stats/{TimeRange} | update YYYY-MM-DD HH:MM:SS | Request an update for daily or monthly stats. Date must repect Iso8601 |
+| leaf/{vin}/command/cockpitStatus | update | Request an update for the cockpit status |
 
 :information_source: The status and commands for the first Leaf in the account are also supported by using the same topic without the {vin}.
 

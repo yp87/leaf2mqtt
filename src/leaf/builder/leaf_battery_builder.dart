@@ -35,19 +35,16 @@ class BatteryInfoBuilder extends BuilderBase {
     _withInfo('lastUpdatedDateTimeUtc', lastUpdatedDateTime.toUtc().toIso8601String());
 
   BatteryInfoBuilder withTimeToFullL2(Duration timeToFullL2) =>
-    _withNonZeroInfo('timeToFullL2InMinutes', timeToFullL2);
+    _withInfo('timeToFullL2InMinutes', timeToFullL2);
 
   BatteryInfoBuilder withTimeToFullL2_6kw(Duration timeToFullL2_6kw) =>
-    _withNonZeroInfo('timeToFullL2_6kwInMinutes', timeToFullL2_6kw);
+    _withInfo('timeToFullL2_6kwInMinutes', timeToFullL2_6kw);
 
   BatteryInfoBuilder withTimeToFullTrickle(Duration timeToFullTrickle) =>
-    _withNonZeroInfo('timeToFullTrickleInMinutes', timeToFullTrickle);
+    _withInfo('timeToFullTrickleInMinutes', timeToFullTrickle);
 
   BatteryInfoBuilder withChargingSpeed(String chargingSpeed) =>
     _withInfo('chargingSpeed', chargingSpeed);
-
-  BatteryInfoBuilder _withNonZeroInfo(String infoName, Duration value) =>
-    value.inMinutes == 0 ? this : _withInfo(infoName, value.inMinutes);
 
   BatteryInfoBuilder _withInfo(String infoName, dynamic value) =>
       BatteryInfoBuilder._withInfo(addInfo(infoName, value));

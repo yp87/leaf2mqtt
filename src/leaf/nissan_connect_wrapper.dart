@@ -4,6 +4,7 @@ import 'package:dartnissanconnect/src/nissanconnect_hvac.dart';
 import 'builder/leaf_battery_builder.dart';
 import 'builder/leaf_climate_builder.dart';
 import 'builder/leaf_location_builder.dart';
+import 'builder/leaf_cockpitstatus_builder.dart';
 import 'builder/leaf_stats_builder.dart';
 import 'leaf_session.dart';
 import 'leaf_vehicle.dart';
@@ -112,10 +113,8 @@ class NissanConnectVehicleWrapper extends VehicleInternal {
   }
 
   @override
-  Future<bool> startClimate(int targetTemperatureCelsius) =>
-      _getVehicle().requestClimateControlOn(
-          DateTime.now().add(const Duration(seconds: 5)),
-          targetTemperatureCelsius);
+  Future<bool> startClimate(int targetTemperatureCelsius) => _getVehicle()
+      .requestClimateControlOn(DateTime.now(), targetTemperatureCelsius);
 
   @override
   Future<bool> stopClimate() => _getVehicle().requestClimateControlOff();
@@ -124,16 +123,18 @@ class NissanConnectVehicleWrapper extends VehicleInternal {
   Future<Map<String, String>> fetchLocation() async {
     final NissanConnectLocation location =
         await _getVehicle().requestLocation();
-
-    String locationJSON = '{"latitude": ' +
-        location.latitude.toString() +
-        ',"longitude": ' +
-        location.longitude.toString() +
-        '}';
     return saveAndPrependVin(LocationInfoBuilder()
         .withLatitude(location.latitude)
         .withLongitude(location.longitude)
-        .withLocation(locationJSON)
+        .build());
+  }
+
+  @override
+  Future<Map<String, String>> fetchCockpitStatus() async {
+    final NissanConnectCockpitStatus cockpitStatus =
+        await _getVehicle().requestCockpitStatus();
+    return saveAndPrependVin(CockpitStatusInfoBuilder()
+        .withTotalMileage(cockpitStatus.totalMileage)
         .build());
   }
 }

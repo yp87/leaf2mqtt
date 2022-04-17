@@ -8,6 +8,7 @@ import 'leaf/leaf_vehicle.dart';
 import 'mqtt_client_wrapper.dart';
 
 LeafSession _session;
+int _commandAttempts = 2;
 final Logger _log = Logger('main');
 
 Future<void> main() async {
@@ -37,7 +38,7 @@ Future<void> main() async {
 
   if ((leafUser?.isEmpty ?? true) || (leafPassword?.isEmpty ?? true)) {
     _log.severe(
-        'LEAF_USER and LEAF_PASSWORD environment variables must be set.');
+        'LEAF_USERNAME and LEAF_PASSWORD environment variables must be set.');
     exit(1);
   }
 
@@ -54,15 +55,20 @@ Future<void> main() async {
     exit(2);
   }
 
-  _session =
-      LeafSessionFactory.createLeafSession(leafType, leafUser, leafPassword);
-
-  await _login();
+  _commandAttempts = int.tryParse(envVars['COMMAND_ATTEMPTS'] ?? '1') ?? 1;
 
   final MqttClientWrapper mqttClient = MqttClientWrapper();
-  mqttClient.onConnected = () => _onConnected(mqttClient);
   await mqttClient.connectWithRetry(
       envVars['MQTT_USERNAME'], envVars['MQTT_PASSWORD']);
+
+  _session = createLeafSession(leafType, leafUser, leafPassword);
+  _session.onExecutionError =
+      (String vin) => _onExecutionError(mqttClient, vin);
+
+  await _login(mqttClient);
+
+  mqttClient.onConnected = () => _onConnected(mqttClient);
+  _onConnected(mqttClient);
 
   // Starting one loop per vehicle because each can have different interval depending on their state.
   await Future.wait(_session.vehicles
@@ -70,7 +76,7 @@ Future<void> main() async {
 }
 
 Completer<void> _loginCompleter;
-Future<void> _login() async {
+Future<void> _login(MqttClientWrapper mqttClient) async {
   if (_loginCompleter != null) {
     _log.fine('Already logging in, waiting...');
     // already logging in.. wait for it to complete.
@@ -94,6 +100,7 @@ Future<void> _login() async {
           'An error occured while logging in. Please make sure you have selected the right LEAF_TYPE, LEAF_USERNAME and LEAF_PASSWORD. Retrying in 5 seconds.');
       _log.fine(e);
       _log.fine(stacktrace);
+      _onExecutionError(mqttClient);
       await Future<void>.delayed(const Duration(seconds: 5));
     }
   }
@@ -155,7 +162,9 @@ void subscribeToCommands(MqttClientWrapper mqttClient, String vin) {
       case 'startcharging':
         _session
             .executeCommandWithRetry(
-                (Vehicle vehicle) => vehicle.startCharging(), vin)
+                (Vehicle vehicle) => vehicle.startCharging(),
+                vin,
+                _commandAttempts)
             .then((_) => Future<void>.delayed(const Duration(seconds: 5))
                 .then((_) => fetchAndPublishBatteryStatus(mqttClient, vin)));
         break;
@@ -170,8 +179,8 @@ void subscribeToCommands(MqttClientWrapper mqttClient, String vin) {
         break;
       case 'stop':
         _session
-            .executeCommandWithRetry(
-                (Vehicle vehicle) => vehicle.stopClimate(), vin)
+            .executeCommandWithRetry((Vehicle vehicle) => vehicle.stopClimate(),
+                vin, _commandAttempts)
             .then((_) => Future<void>.delayed(const Duration(seconds: 5))
                 .then((_) => fetchAndPublishClimateStatus(mqttClient, vin)));
         break;
@@ -202,7 +211,8 @@ void subscribeToCommands(MqttClientWrapper mqttClient, String vin) {
                 .executeCommandWithRetry(
                     (Vehicle vehicle) =>
                         vehicle.startClimate(targetTemperatureCelsius),
-                    vin)
+                    vin,
+                    _commandAttempts)
                 .then((_) => Future<void>.delayed(const Duration(seconds: 5))
                     .then(
                         (_) => fetchAndPublishClimateStatus(mqttClient, vin)));
@@ -235,6 +245,16 @@ void subscribeToCommands(MqttClientWrapper mqttClient, String vin) {
       case 'update':
         fetchAndPublishLocation(mqttClient, vin);
         break;
+      default:
+    }
+  });
+
+  subscribe('command/cockpitStatus', (String payload) {
+    switch (payload) {
+      case 'update':
+        fetchAndPublishCockpitStatus(mqttClient, vin);
+        break;
+      default:
     }
   });
 }
@@ -280,6 +300,14 @@ Future<void> fetchAndPublishLocation(MqttClientWrapper mqttClient, String vin) {
       .then(mqttClient.publishStates);
 }
 
+Future<void> fetchAndPublishCockpitStatus(
+    MqttClientWrapper mqttClient, String vin) {
+  _log.finer('fetchAndPublishCockpit for $vin');
+  return _session
+      .executeWithRetry((Vehicle vehicle) => vehicle.fetchCockpitStatus(), vin)
+      .then(mqttClient.publishStates);
+}
+
 Future<void> fetchAndPublishAllStatus(
     MqttClientWrapper mqttClient, String vin) {
   _log.finer('fetchAndPublishAllStatus for $vin');
@@ -288,7 +316,8 @@ Future<void> fetchAndPublishAllStatus(
         (Vehicle vehicle) => vehicle.getVehicleStatus(), vin))),
     fetchAndPublishBatteryStatus(mqttClient, vin),
     fetchAndPublishClimateStatus(mqttClient, vin),
-    fetchAndPublishLocation(mqttClient, vin)
+    fetchAndPublishLocation(mqttClient, vin),
+    fetchAndPublishCockpitStatus(mqttClient, vin)
   ]);
 }
 
@@ -296,6 +325,15 @@ void _onConnected(MqttClientWrapper mqttClient) {
   _log.info('MQTT connected.');
   mqttClient.subscribeToCommandTopic();
   mqttClient.publishStates(_session.getAllLastKnownStatus());
+}
+
+void _onExecutionError(MqttClientWrapper mqttClient, [String vin]) {
+  _log.warning('Could not execute request.');
+  final String errorDateTime = DateTime.now().toUtc().toIso8601String();
+  mqttClient.publishMessage('lastErrorDateTimeUtc', errorDateTime);
+  if (vin != null) {
+    mqttClient.publishMessage('{vin}/lastErrorDateTimeUtc', errorDateTime);
+  }
 }
 
 extension on MqttClientWrapper {
