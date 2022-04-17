@@ -281,7 +281,7 @@ You can add your Leaf as a `device_tracker` type in Home-Assistant. This allows 
 device_tracker:
   - platform: mqtt_json
     devices:
-      Leaf: leaf/XXXXSOMEXVINXXXXX/location/location
+      Leaf: leaf/XXXXSOMEXVINXXXXX/location/json
 ```
 
 ### :handshake: Credits
