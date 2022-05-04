@@ -30,7 +30,7 @@ Future<void> main() async {
     print('${record.level.name}: ${record.time}: ${record.loggerName}: ${record.message}');
   });
 
-  _log.severe('V0.10');
+  _log.info('V0.11');
 
   final String leafUser = envVars['LEAF_USERNAME'];
   final String leafPassword = envVars['LEAF_PASSWORD'];
