@@ -1,0 +1,40 @@
+{
+  "name": "Leaf2MQTT",
+  "version": "38",
+  "slug": "leaf2mqtt",
+  "description": "Interact with your Nissan Leaf using MQTT",
+  "startup": "application",
+  "url": "https://github.com/yp87/leaf2mqtt",
+  "arch": [
+    "aarch64",
+    "amd64"
+  ],
+  "config": {
+    "LEAF_USERNAME": "",
+    "LEAF_PASSWORD": "",
+    "LEAF_TYPE": "",
+    "MQTT_HOST": "",
+    "MQTT_PORT": "",
+    "MQTT_USERNAME": "",
+    "MQTT_PASSWORD": "",
+    "MQTT_BASE_TOPIC": "",
+    "UPDATE_INTERVAL_MINUTES": "",
+    "CHARGING_UPDATE_INTERVAL_MINUTES": "",
+    "COMMAND_ATTEMPTS": "",
+    "LOG_LEVEL": ""
+  },
+  "schema": {
+    "LEAF_USERNAME": "str",
+    "LEAF_PASSWORD": "password",
+    "LEAF_TYPE": "list(newerThanMay2019|olderCanada|olderUSA|olderEurope|olderAustralia|olderJapan)",
+    "MQTT_HOST": "str",
+    "MQTT_PORT": "int?",
+    "MQTT_USERNAME": "str?",
+    "MQTT_PASSWORD": "password?",
+    "MQTT_BASE_TOPIC": "str?",
+    "UPDATE_INTERVAL_MINUTES": "int(5,)?",
+    "CHARGING_UPDATE_INTERVAL_MINUTES": "int(5,)?",
+    "COMMAND_ATTEMPTS": "int(1,)?",
+    "LOG_LEVEL": "list(All|Info|Warning|Severe)"
+  }
+}

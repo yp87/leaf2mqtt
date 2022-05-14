@@ -1,0 +1,15 @@
+#!/usr/bin/with-contenv bashio
+
+CONFIG=$(bashio::addon.options)
+
+bashio::log.info "Setting environment variables..."
+
+for k in $(bashio::jq "${CONFIG}" 'keys | .[]'); do
+    export $k="$(bashio::config $k)"
+done
+
+bashio::log "Done."
+
+bashio::log.info "Starting leaf2mqtt..."
+
+/app/bin/leaf_2_mqtt

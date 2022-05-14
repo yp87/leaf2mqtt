@@ -46,3 +46,25 @@ jobs:
           push: true
           platforms: linux/amd64,linux/arm64
           tags: ${{ steps.meta.outputs.tags }}
+
+  update_addon:
+    name: Update Home Assistant add-on
+    needs: push_to_registry
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Change image version number
+        uses: jossef/action-set-json-field@v1
+        with:
+          file: addon/config.json
+          field: version
+          value: ${{ github.run_number }}
+
+      - name: Commit changes
+        uses: stefanzweifel/git-auto-commit-action@v4
+        with:
+          commit_message: Update add-on version
