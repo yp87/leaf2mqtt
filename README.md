@@ -191,6 +191,7 @@ In these examples, the `MQTT_BASE_TOPIC` is set to the default (`leaf`).
 | ------ | ---- | ----------- |
 | leaf/{vin}/cockpitStatus/totalMileage | Double | The total mileage from the vehicle. The unit (km or miles) depends on the regional area. |
 | leaf/{vin}/cockpitStatus/lastReceivedDateTimeUtc | Iso8601 UTC | The datetime when leaf2mqtt received the last cockpit status values |
+| leaf/{vin}/cockpitStatus/json | String | A json representation of all cockpit status |
 
 #### Commands
 | Topic | Payload | Description |
