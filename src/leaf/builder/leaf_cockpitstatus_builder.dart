@@ -5,7 +5,7 @@ class CockpitStatusInfoBuilder extends BuilderBase {
   CockpitStatusInfoBuilder._withInfo(Map<String, String> info) : super.withInfo(info);
 
   @override
-  String get baseTopic => 'cockpit';
+  List<String> get baseTopics => <String>['cockpitStatus', 'cockpit'];
 
   CockpitStatusInfoBuilder withTotalMileage(dynamic latitude) =>
     _withInfo('totalMileage', latitude);

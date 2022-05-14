@@ -8,7 +8,9 @@ abstract class BuilderBase {
 
   final Map<String, String> _info;
 
-  String get baseTopic;
+  String get baseTopic => '';
+
+  List<String> get baseTopics => <String>[baseTopic];
 
   Map<String, String> addInfo(String key, dynamic value) {
     final Map<String, String> modifiedInfo = Map<String, String>.from(_info);
@@ -24,6 +26,10 @@ abstract class BuilderBase {
       addInfo('lastReceivedDateTimeUtc', DateTime.now().toUtc().toIso8601String());
     info['json'] = json.encode(info);
 
-    return info.map((String key, String value) => MapEntry<String, String>('$baseTopic/$key', value));
+    return Map<String, String>.fromEntries(
+      baseTopics.map((String baseTopic) =>
+        info.map((String key, String value) =>
+          MapEntry<String, String>('$baseTopic/$key', value)))
+      .expand((Map<String, String> element) => element.entries));
   }
 }
