@@ -11,9 +11,9 @@ You must have a working MQTT broker on your LAN.
 Should work with multiple Leafs, but it is untested. Please open an issue with feedback if possible.
 
 - [Setup](#setup)
-  * [Pre-built images](#pre-built-images-)
-  * [Building the image](#building-the-image-)
-  * [Running the image](#running-the-image-)
+  * [Pre-built images](#pre-built-images)
+  * [Building the image](#building-the-image)
+  * [Running the image](#running-the-image)
 - [Status and Commands](#status-and-commands)
   * [General](#general)
     + [Status](#status)
