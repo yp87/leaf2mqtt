@@ -113,9 +113,9 @@ In these examples, the `MQTT_BASE_TOPIC` is set to the default (`leaf`).
 | leaf/{vin}/battery/cruisingRangeAcOffMiles | Integer | Range left with climate off in miles as estimated by the Leaf |
 | leaf/{vin}/battery/cruisingRangeAcOnKm | Integer | Range left with climate on in kilometers as estimated by the Leaf |
 | leaf/{vin}/battery/cruisingRangeAcOnMiles | Integer | Range left with climate on in miles as estimated by the Leaf |
-| leaf/{vin}/battery/timeToFullTrickleInMinutes | Integer | The reported time in minutes to fully charge when trickling (~1kw) |
-| leaf/{vin}/battery/timeToFullL2InMinutes | Integer | The reported time in minutes to fully charge when charging in half speed L2 (~3kw) |
-| leaf/{vin}/battery/timeToFullL2_6kwInMinutes | Integer | The reported time in minutes to fully charge when charging in full speed L2 (~6kw) |
+| leaf/{vin}/battery/timeToFullTrickleInMinutes | String | The reported time (H:MM:SS.mmmmmm) to fully charge when trickling (~1kw) |
+| leaf/{vin}/battery/timeToFullL2InMinutes | String | The reported time (H:MM:SS.mmmmmm) to fully charge when charging in half speed L2 (~3kw) |
+| leaf/{vin}/battery/timeToFullL2_6kwInMinutes | String | The reported time (H:MM:SS.mmmmmm) to fully charge when charging in full speed L2 (~6kw) |
 | leaf/{vin}/battery/lastUpdatedDateTimeUtc | Iso8601 UTC | The datetime when the last battery values were updated |
 | leaf/{vin}/battery/lastReceivedDateTimeUtc | Iso8601 UTC | The datetime when leaf2mqtt received the last battery values |
 | leaf/{vin}/battery/json | String | A json representation of all battery status |
