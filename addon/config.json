@@ -5,6 +5,7 @@
   "description": "Interact with your Nissan Leaf using MQTT",
   "startup": "application",
   "url": "https://github.com/yp87/leaf2mqtt",
+  "init": false,
   "arch": [
     "aarch64",
     "amd64"
