@@ -10,7 +10,7 @@ assignees: yp87
 **Describe the bug**
 A clear and concise description of what the bug is.
 
-** LEAF_TYPE **
+**LEAF_TYPE**
 The leaf type you use in your configuration
 
 **Expected behavior**
