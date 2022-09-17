@@ -66,7 +66,7 @@ packages:
     description:
       path: "."
       ref: HEAD
-      resolved-ref: "45f5557057d3aa829b58647e87bc43cec9793d3f"
+      resolved-ref: "f2a4335c1fdd605ac0d5444539496eedf85c807f"
       url: "https://gitlab.com/tobiaswkjeldsen/dartnissanconnectna"
     source: git
     version: "1.0.0"
