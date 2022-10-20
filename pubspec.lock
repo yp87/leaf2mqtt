@@ -41,7 +41,7 @@ packages:
     description:
       path: "."
       ref: HEAD
-      resolved-ref: "5a81a229e6be3448a732c22ac660b668496a3f56"
+      resolved-ref: f54dc13e1910d4e87db6555aef0398cc5e41903c
       url: "https://github.com/Tobiaswk/dartcarwings"
     source: git
     version: "1.0.0"
