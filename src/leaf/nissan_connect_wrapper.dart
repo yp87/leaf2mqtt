@@ -125,9 +125,10 @@ class NissanConnectVehicleWrapper extends VehicleInternal {
 
   @override
   Future<Map<String, String>> fetchCockpitStatus() async {
-    final NissanConnectCockpitStatus cockpitStatus = await _getVehicle().requestCockpitStatus();
+    //final NissanConnectCockpitStatus cockpitStatus = await _getVehicle().requestCockpitStatus();
     return saveAndPrependVin(CockpitStatusInfoBuilder()
-      .withTotalMileage(cockpitStatus.totalMileage)
+      //.withTotalMileage(cockpitStatus.totalMileage)
+      .withTotalMileage(0)
       .build());
   }
 }

@@ -15,20 +15,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "0.1.0"
-  charcode:
-    dependency: transitive
-    description:
-      name: charcode
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "1.3.1"
   clock:
     dependency: transitive
     description:
       name: clock
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "1.1.0"
+    version: "1.1.1"
   collection:
     dependency: transitive
     description:
@@ -48,7 +41,7 @@ packages:
     description:
       path: "."
       ref: HEAD
-      resolved-ref: "21051d9ab6759efa12cd6d1bc9a22af7ee24651f"
+      resolved-ref: "5a81a229e6be3448a732c22ac660b668496a3f56"
       url: "https://github.com/Tobiaswk/dartcarwings"
     source: git
     version: "1.0.0"
@@ -57,8 +50,8 @@ packages:
     description:
       path: "."
       ref: HEAD
-      resolved-ref: e6ef1b1004482f59ea0d08f7bee8cdf1e2fc3cd5
-      url: "https://gitlab.com/sensor-freak/dartnissanconnect"
+      resolved-ref: e7a78e85247512e50a92970da77968c5fa1ee43a
+      url: "https://gitlab.com/tobiaswkjeldsen/dartnissanconnect"
     source: git
     version: "1.0.0"
   dartnissanconnectna:
@@ -66,7 +59,7 @@ packages:
     description:
       path: "."
       ref: HEAD
-      resolved-ref: "45f5557057d3aa829b58647e87bc43cec9793d3f"
+      resolved-ref: f2a4335c1fdd605ac0d5444539496eedf85c807f
       url: "https://gitlab.com/tobiaswkjeldsen/dartnissanconnectna"
     source: git
     version: "1.0.0"
@@ -90,7 +83,7 @@ packages:
       name: http_parser
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "4.0.0"
+    version: "4.0.1"
   intl:
     dependency: transitive
     description:
@@ -132,21 +125,21 @@ packages:
       name: source_span
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "1.8.2"
+    version: "1.9.1"
   string_scanner:
     dependency: transitive
     description:
       name: string_scanner
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "1.1.0"
+    version: "1.1.1"
   term_glyph:
     dependency: transitive
     description:
       name: term_glyph
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "1.2.0"
+    version: "1.2.1"
   typed_data:
     dependency: transitive
     description:
