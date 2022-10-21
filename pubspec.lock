@@ -50,10 +50,10 @@ packages:
     description:
       path: "."
       ref: HEAD
-      resolved-ref: e7a78e85247512e50a92970da77968c5fa1ee43a
-      url: "https://gitlab.com/tobiaswkjeldsen/dartnissanconnect"
+      resolved-ref: a54210c2b8733db038542a219e20c0a8f35da1aa
+      url: "https://gitlab.com/sensor-freak/dartnissanconnect"
     source: git
-    version: "1.0.0"
+    version: "1.0.3"
   dartnissanconnectna:
     dependency: "direct main"
     description:
