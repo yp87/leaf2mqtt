@@ -1,6 +1,6 @@
 {
   "name": "Leaf2MQTT",
-  "version": "43",
+  "version": "44",
   "slug": "leaf2mqtt",
   "description": "Interact with your Nissan Leaf using MQTT",
   "startup": "application",
