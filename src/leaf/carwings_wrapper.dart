@@ -49,11 +49,34 @@ class CarwingsVehicleWrapper extends VehicleInternal {
   Future<Map<String, String>> fetchMonthlyStatistics(DateTime targetDate) async {
     final CarwingsStatsMonthly stats = await _getVehicle().requestStatisticsMonthly(targetDate);
 
-    return saveAndPrependVin(StatsInfoBuilder(TimeRange.Monthly)
-      .withTargetDate(stats.dateTime)
-      .withTripsNumber(int.tryParse(stats.totalNumberOfTrips))
-      .withCo2ReductionKg(stats.totalCO2Reduction)
-      .build());
+    if (stats.mileageUnit == 'km') {
+      return saveAndPrependVin(StatsInfoBuilder(TimeRange.Monthly)
+        .withTargetDate(stats.dateTime)
+        .withTripsNumber(int.tryParse(stats.totalNumberOfTrips))
+        .withCo2ReductionKg(stats.totalCO2Reduction)
+        .withKwhUsed(stats.totalConsumptionKWh)
+        .withTravelDistanceKilometers(stats.totalTravelDistanceMileage)
+        .withKwhPerKilometers(stats.totalkWhPerMileage)
+        .withKilometersPerKwh(stats.totalMileagePerKWh)
+        .build());
+    } else if (stats.mileageUnit == 'mi') {
+      return saveAndPrependVin(StatsInfoBuilder(TimeRange.Monthly)
+        .withTargetDate(stats.dateTime)
+        .withTripsNumber(int.tryParse(stats.totalNumberOfTrips))
+        .withCo2ReductionKg(stats.totalCO2Reduction)
+        .withKwhUsed(stats.totalConsumptionKWh)
+        .withTravelDistanceMiles(stats.totalTravelDistanceMileage)
+        .withKwhPerMiles(stats.totalkWhPerMileage)
+        .withMilesPerKwh(stats.totalMileagePerKWh)
+        .build());
+    } else {
+      return saveAndPrependVin(StatsInfoBuilder(TimeRange.Monthly)
+        .withTargetDate(stats.dateTime)
+        .withTripsNumber(int.tryParse(stats.totalNumberOfTrips))
+        .withCo2ReductionKg(stats.totalCO2Reduction)
+        .withKwhUsed(stats.totalConsumptionKWh)
+        .build());
+    }
   }
 
   @override
