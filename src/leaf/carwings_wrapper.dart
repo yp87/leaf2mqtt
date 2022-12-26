@@ -42,9 +42,24 @@ class CarwingsVehicleWrapper extends VehicleInternal {
   bool isFirstVehicle() => _session.vehicle.vin == vin;
 
   @override
-  Future<Map<String, String>> fetchDailyStatistics(DateTime targetDate) =>
-    Future<Map<String, String>>.value(<String, String>{});
+  Future<Map<String, String>> fetchDailyStatistics(DateTime targetDate) async {
+    final CarwingsStatsDaily stats = await _getVehicle().requestStatisticsDaily();
 
+    if (stats.electricCostScale == 'miles/kWh') {
+      return saveAndPrependVin(StatsInfoBuilder(TimeRange.Daily)
+        .withTargetDate(stats.dateTime)
+        .withKwhPerMiles(stats.KWhPerMileage)
+        .withMilesPerKwh(stats.mileagePerKWh)
+        .build());
+    } else {
+      return saveAndPrependVin(StatsInfoBuilder(TimeRange.Daily)
+        .withTargetDate(stats.dateTime)
+        .withKwhPerKilometers(stats.KWhPerMileage)
+        .withKilometersPerKwh(stats.mileagePerKWh)
+        .build());
+    }
+  }
+  
   @override
   Future<Map<String, String>> fetchMonthlyStatistics(DateTime targetDate) async {
     final CarwingsStatsMonthly stats = await _getVehicle().requestStatisticsMonthly(targetDate);
