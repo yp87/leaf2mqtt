@@ -42,18 +42,56 @@ class CarwingsVehicleWrapper extends VehicleInternal {
   bool isFirstVehicle() => _session.vehicle.vin == vin;
 
   @override
-  Future<Map<String, String>> fetchDailyStatistics(DateTime targetDate) =>
-    Future<Map<String, String>>.value(<String, String>{});
+  Future<Map<String, String>> fetchDailyStatistics(DateTime targetDate) async {
+    final CarwingsStatsDaily stats = await _getVehicle().requestStatisticsDaily();
 
+    if (stats.electricCostScale == 'miles/kWh') {
+      return saveAndPrependVin(StatsInfoBuilder(TimeRange.Daily)
+        .withTargetDate(stats.dateTime)
+        .withKwhPerMiles(stats.KWhPerMileage)
+        .withMilesPerKwh(stats.mileagePerKWh)
+        .build());
+    } else {
+      return saveAndPrependVin(StatsInfoBuilder(TimeRange.Daily)
+        .withTargetDate(stats.dateTime)
+        .withKwhPerKilometers(stats.KWhPerMileage)
+        .withKilometersPerKwh(stats.mileagePerKWh)
+        .build());
+    }
+  }
+  
   @override
   Future<Map<String, String>> fetchMonthlyStatistics(DateTime targetDate) async {
     final CarwingsStatsMonthly stats = await _getVehicle().requestStatisticsMonthly(targetDate);
 
-    return saveAndPrependVin(StatsInfoBuilder(TimeRange.Monthly)
-      .withTargetDate(stats.dateTime)
-      .withTripsNumber(int.tryParse(stats.totalNumberOfTrips))
-      .withCo2ReductionKg(stats.totalCO2Reduction)
-      .build());
+    if (stats.mileageUnit == 'km') {
+      return saveAndPrependVin(StatsInfoBuilder(TimeRange.Monthly)
+        .withTargetDate(stats.dateTime)
+        .withTripsNumber(int.tryParse(stats.totalNumberOfTrips))
+        .withCo2ReductionKg(stats.totalCO2Reduction)
+        .withKwhUsed(stats.totalConsumptionKWh)
+        .withTravelDistanceKilometers(stats.totalTravelDistanceMileage)
+        .withKwhPerKilometers(stats.totalkWhPerMileage)
+        .withKilometersPerKwh(stats.totalMileagePerKWh)
+        .build());
+    } else if (stats.mileageUnit == 'mi') {
+      return saveAndPrependVin(StatsInfoBuilder(TimeRange.Monthly)
+        .withTargetDate(stats.dateTime)
+        .withTripsNumber(int.tryParse(stats.totalNumberOfTrips))
+        .withCo2ReductionKg(stats.totalCO2Reduction)
+        .withKwhUsed(stats.totalConsumptionKWh)
+        .withTravelDistanceMiles(stats.totalTravelDistanceMileage)
+        .withKwhPerMiles(stats.totalkWhPerMileage)
+        .withMilesPerKwh(stats.totalMileagePerKWh)
+        .build());
+    } else {
+      return saveAndPrependVin(StatsInfoBuilder(TimeRange.Monthly)
+        .withTargetDate(stats.dateTime)
+        .withTripsNumber(int.tryParse(stats.totalNumberOfTrips))
+        .withCo2ReductionKg(stats.totalCO2Reduction)
+        .withKwhUsed(stats.totalConsumptionKWh)
+        .build());
+    }
   }
 
   @override
