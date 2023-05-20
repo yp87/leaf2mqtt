@@ -1,4 +1,4 @@
-FROM dart AS build
+FROM dart:2.19.6-sdk AS build
 
 RUN apt-get update && \
     apt-get install -y git

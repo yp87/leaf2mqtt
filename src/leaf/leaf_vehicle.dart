@@ -53,7 +53,7 @@ abstract class Vehicle {
   Map<String, String> getLastKnownStatus();
 
   Map<String, String> getVehicleStatus() {
-    Map<String, String> info = {
+    final Map<String, String> info = <String, String>{
       'nickname': _lastKnownStatus['nickname'],
       'vin': _lastKnownStatus['vin'],
     };
