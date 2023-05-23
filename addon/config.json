@@ -10,11 +10,11 @@
     "aarch64",
     "amd64"
   ],
-  "config": {
+  "options": {
     "LEAF_USERNAME": "",
     "LEAF_PASSWORD": "",
     "LEAF_TYPE": "",
-    "MQTT_HOST": "",
+    "MQTT_HOST": "homeassistant.local",
     "MQTT_PORT": "",
     "MQTT_USERNAME": "",
     "MQTT_PASSWORD": "",
