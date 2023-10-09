@@ -66,6 +66,8 @@ class NissanConnectVehicleWrapper extends VehicleInternal {
 
   @override
   Future<Map<String, String>> fetchBatteryStatus() async {
+    await _getVehicle().requestBatteryStatusRefresh();
+
     final NissanConnectBattery battery = await _getVehicle().requestBatteryStatus();
 
     final int percentage =
