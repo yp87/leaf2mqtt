@@ -1,3 +1,5 @@
+This project is not active anymore. Feel free to copy and modify anything. As of this writing, it looks like this repo is more active: https://github.com/kamiKAC/leaf2mqtt/tree/main. Thank you.
+
 ![Docker Pulls](https://img.shields.io/docker/pulls/yp87/leaf2mqtt) ![Docker Image Version (latest by date)](https://img.shields.io/docker/v/yp87/leaf2mqtt)
 # leaf2mqtt
 > :warning: olderCanada and olderUSA support may break at anytime because Nissan keep changing the API key. Thank you Nissan for working against your customers.
